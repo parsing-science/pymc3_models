@@ -6,8 +6,8 @@ import numpy as np
 from pymc3 import summary
 from sklearn.model_selection import train_test_split
 
-from ps_toolkit.exc import PSToolkitError
-from ps_toolkit import HLR
+from pymc3_models.exc import PyMC3ModelsError
+from pymc3_models import HLR
 
 
 class HLRTestCase(unittest.TestCase):
@@ -88,7 +88,7 @@ class HLRPredictProbaTestCase(HLRTestCase):
         self.assertEqual(stds.shape, self.Y_test.shape)
 
     def test_predict_proba_raises_error_if_not_fit(self):
-        with self.assertRaises(PSToolkitError) as no_fit_error:
+        with self.assertRaises(PyMC3ModelsError) as no_fit_error:
             test_HLR = HLR()
             test_HLR.predict_proba(self.X_train, self.cat_train)
 

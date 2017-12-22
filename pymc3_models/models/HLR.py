@@ -5,7 +5,7 @@ import theano
 import theano.tensor as T
 
 from pymc3_models.exc import PyMC3ModelsError
-from pymc3_models import BayesianModel
+from pymc3_models.models import BayesianModel
 
 
 class HLR(BayesianModel):

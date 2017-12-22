@@ -1,6 +1,6 @@
 import unittest
 
-from ps_toolkit.pymc3_models import BayesianModel
+from pymc3_models.models import BayesianModel
 
 
 class BayesianModelTestCase(unittest.TestCase):
