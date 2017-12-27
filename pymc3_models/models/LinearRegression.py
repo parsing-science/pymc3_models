@@ -1,6 +1,6 @@
 import numpy as np
 import pymc3 as pm
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import r2_score
 import theano
 import theano.tensor as T
 
@@ -8,18 +8,19 @@ from pymc3_models.exc import PyMC3ModelsError
 from pymc3_models.models import BayesianModel
 
 
-class HierarchicalLogisticRegression(BayesianModel):
+class LinearRegression(BayesianModel):
     """
-    Custom Hierachical Logistic Regression built using PyMC3.
+    Custom Linear Regression built using PyMC3.
     """
 
     def __init__(self):
-        super(HierarchicalLogisticRegression, self).__init__()
-        self.num_cats = None
+        super(LinearRegression, self).__init__()
 
     def create_model(self):
         """
         Creates and returns the PyMC3 model.
+
+        Need num_samples to set size of shared variables. Otherwise, NUTS will mess up. See http://docs.pymc.io/advanced_theano.html
 
         Returns the model.
         """
@@ -27,33 +28,22 @@ class HierarchicalLogisticRegression(BayesianModel):
 
         model_output = theano.shared(np.zeros(self.num_training_samples))
 
-        model_cats = theano.shared(np.zeros(self.num_training_samples, dtype='int'))
-
         self.shared_vars = {
             'model_input': model_input,
             'model_output': model_output,
-            'model_cats': model_cats
         }
 
         model = pm.Model()
 
         with model:
-            mu_alpha = pm.Normal('mu_alpha', mu=0, sd=100)
-            sigma_alpha = pm.HalfNormal('sigma_alpha', sd=100)
+            alpha = pm.Normal('alpha', mu=0, sd=100, shape=(1))
+            betas = pm.Normal('betas', mu=0, sd=100, shape=(self.num_pred))
 
-            mu_beta = pm.Normal('mu_beta', mu=0, sd=100)
-            sigma_beta = pm.HalfNormal('sigma_beta', sd=100)
+            s = pm.HalfNormal('s', tau=1)
 
-            alpha = pm.Normal('alpha', mu=mu_alpha, sd=sigma_alpha, shape=(self.num_cats,))
-            beta = pm.Normal('beta', mu=mu_beta, sd=sigma_beta, shape=(self.num_cats, self.num_pred))
+            mean = alpha + T.sum(betas * model_input, 1)
 
-            c = model_cats
-
-            temp = alpha[c] + T.sum(beta[c] * model_input, 1)
-
-            p = pm.invlogit(temp)
-
-            o = pm.Bernoulli('o', p, observed=model_output)
+            y = pm.Normal('y', mu=mean, sd=s, observed=model_output)
 
         return model
 
@@ -61,7 +51,6 @@ class HierarchicalLogisticRegression(BayesianModel):
         self,
         X,
         y,
-        cats,
         inference_type='advi',
         minibatch_size=None,
         inference_args=None
@@ -75,14 +64,13 @@ class HierarchicalLogisticRegression(BayesianModel):
 
         y : numpy array, shape [n_samples, ]
 
-        cats: numpy array, shape [n_samples, ]
-
         n: number of iterations for ADVI fit, defaults to 200000
 
         batch_size: number of samples to include in each minibatch for ADVI, defaults to 100
         """
-        self.num_cats = len(np.unique(cats))
         self.num_training_samples, self.num_pred = X.shape
+
+        self.inference_type = inference_type
 
         if not inference_args:
             inference_args = self._set_default_inference_args()
@@ -95,24 +83,24 @@ class HierarchicalLogisticRegression(BayesianModel):
                 minibatches = {
                     self.shared_vars['model_input']: pm.Minibatch(X, batch_size=minibatch_size),
                     self.shared_vars['model_output']: pm.Minibatch(y, batch_size=minibatch_size),
-                    self.shared_vars['model_cats']: pm.Minibatch(cats, batch_size=minibatch_size)
                 }
 
                 inference_args['more_replacements'] = minibatches
+        else:
+            print('setting shared vars')
+            self._set_shared_vars({'model_input': X, 'model_output': y})
 
         self._inference(inference_type, inference_args)
 
         return self
 
-    def predict_proba(self, X, cats, return_std=False):
+    def predict_proba(self, X, return_std=False):
         """
         Predicts probabilities of new data with a trained HLR
 
         Parameters
         ----------
         X : numpy array, shape [n_samples, n_features]
-
-        cats: numpy array, shape [n_samples, ]
 
         return_std: Boolean flag of whether to return standard deviations with mean probabilities. Defaults to False.
         """
@@ -125,32 +113,28 @@ class HierarchicalLogisticRegression(BayesianModel):
         if self.cached_model is None:
             self.cached_model = self.create_model()
 
-        self._set_shared_vars({'model_input': X, 'model_output': np.zeros(num_samples), 'model_cats': cats})
+        self._set_shared_vars({'model_input': X, 'model_output': np.zeros(num_samples)})
 
         ppc = pm.sample_ppc(self.trace, model=self.cached_model, samples=2000)
 
         if return_std:
-            return ppc['o'].mean(axis=0), ppc['o'].std(axis=0)
+            return ppc['y'].mean(axis=0), ppc['y'].std(axis=0)
         else:
-            return ppc['o'].mean(axis=0)
+            return ppc['y'].mean(axis=0)
 
-    def predict(self, X, cats):
+    def predict(self, X):
         """
         Predicts labels of new data with a trained model
 
         Parameters
         ----------
         X : numpy array, shape [n_samples, n_features]
-
-        cats: numpy array, shape [n_samples, ]
         """
-        ppc_mean = self.predict_proba(X, cats)
+        ppc_mean = self.predict_proba(X)
 
-        pred = ppc_mean > 0.5
+        return ppc_mean
 
-        return pred
-
-    def score(self, X, y, cats):
+    def score(self, X, y):
         """
         Scores new data with a trained model.
 
@@ -159,26 +143,22 @@ class HierarchicalLogisticRegression(BayesianModel):
         X : numpy array, shape [n_samples, n_features]
 
         y : numpy array, shape [n_samples, ]
-
-        cats: numpy array, shape [n_samples, ]
         """
 
-        return accuracy_score(y, self.predict(X, cats))
+        return r2_score(y, self.predict(X))
 
     def save(self, file_prefix):
         params = {
             'inference_type': self.inference_type,
-            'num_cats': self.num_cats,
             'num_pred': self.num_pred,
             'num_training_samples': self.num_training_samples
         }
 
-        super(HierarchicalLogisticRegression, self).save(file_prefix, params)
+        super(LinearRegression, self).save(file_prefix, params)
 
     def load(self, file_prefix):
-        params = super(HierarchicalLogisticRegression, self).load(file_prefix, load_custom_params=True)
+        params = super(LinearRegression, self).load(file_prefix, load_custom_params=True)
 
         self.inference_type = params['inference_type']
-        self.num_cats = params['num_cats']
         self.num_pred = params['num_pred']
         self.num_training_samples = params['num_training_samples']
