@@ -8,13 +8,13 @@ from pymc3_models.exc import PyMC3ModelsError
 from pymc3_models.models import BayesianModel
 
 
-class HLR(BayesianModel):
+class HierarchicalLogisticRegression(BayesianModel):
     """
     Custom Hierachical Logistic Regression built using PyMC3.
     """
 
     def __init__(self):
-        super(HLR, self).__init__()
+        super(HierarchicalLogisticRegression, self).__init__()
         self.num_cats = None
 
     def create_model(self):
@@ -57,7 +57,18 @@ class HLR(BayesianModel):
 
         return model
 
-    def fit(self, X, y, cats, n=200000, batch_size=100):
+    def fit(
+        self,
+        X,
+        y,
+        cats,
+        inference_type='advi',
+        minibatch_size=100,
+        inference_args={
+            'n': 200000,
+            'callbacks': [pm.callbacks.CheckParametersConvergence()]
+        }
+    ):
         """
         Train the HLR model
 
@@ -79,15 +90,17 @@ class HLR(BayesianModel):
         if self.cached_model is None:
             self.cached_model = self.create_model()
 
-        with self.cached_model:
+        if inference_type == 'advi':
+            with self.cached_model:
+                minibatches = {
+                    self.shared_vars['model_input']: pm.Minibatch(X, batch_size=minibatch_size),
+                    self.shared_vars['model_output']: pm.Minibatch(y, batch_size=minibatch_size),
+                    self.shared_vars['model_cats']: pm.Minibatch(cats, batch_size=minibatch_size)
+                }
 
-            minibatches = {
-                self.shared_vars['model_input']: pm.Minibatch(X, batch_size=batch_size),
-                self.shared_vars['model_output']: pm.Minibatch(y, batch_size=batch_size),
-                self.shared_vars['model_cats']: pm.Minibatch(cats, batch_size=batch_size)
-            }
+                inference_args['minibatches'] = minibatches
 
-            self._inference(minibatches, n)
+                self._inference(inference_type, inference_args)
 
         return self
 
@@ -155,10 +168,10 @@ class HLR(BayesianModel):
     def save(self, file_prefix):
         params = {'num_cats': self.num_cats, 'num_pred': self.num_pred}
 
-        super(HLR, self).save(file_prefix, params)
+        super(HierarchicalLogisticRegression, self).save(file_prefix, params)
 
     def load(self, file_prefix):
-        params = super(HLR, self).load(file_prefix, load_custom_params=True)
+        params = super(HierarchicalLogisticRegression, self).load(file_prefix, load_custom_params=True)
 
         self.num_cats = params['num_cats']
         self.num_pred = params['num_pred']

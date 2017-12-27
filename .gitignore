@@ -103,3 +103,5 @@ ENV/
 #Apple
 .DS_Store
 
+# Pickles
+notebooks/pickle_jar/

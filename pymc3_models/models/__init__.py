@@ -26,7 +26,11 @@ class BayesianModel(BaseEstimator):
         for key in shared_vars.keys():
             self.shared_vars[key].set_value(shared_vars[key])
 
-    def _inference(self, minibatches, n=200000):
+    def _inference(self, inference_type='advi', inference_args={}):
+        if inference_type == 'advi':
+            self._advi_inference(inference_args)
+
+    def _advi_inference(self, inference_args):
         """
         Runs minibatch variational ADVI and then sample from those results.
 
@@ -38,12 +42,7 @@ class BayesianModel(BaseEstimator):
         """
         with self.cached_model:
             advi = pm.ADVI()
-            approx = pm.fit(
-                n=n,
-                method=advi,
-                more_replacements=minibatches,
-                callbacks=[pm.callbacks.CheckParametersConvergence()]
-            )
+            approx = pm.fit(method=advi, **inference_args)
 
         self.advi_trace = approx.sample(draws=10000)
 
