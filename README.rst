@@ -20,6 +20,7 @@ The current development branch of PyMC3 Models can be installed from GitHub, als
 To run the package locally (in a virtual environment):
 
 ::
+
     git clone https://github.com/parsing-science/pymc3_models.git
     cd pymc3_models
     virtualenv venv
