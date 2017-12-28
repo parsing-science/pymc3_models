@@ -26,6 +26,7 @@ Usage
 Using PyMC3 Models is as simple as using scikit-learn.
 
 ::
+
     from pymc3_models import LinearRegression
     LR = LinearRegression()
     LR.fit(X, Y)
