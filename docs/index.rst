@@ -12,6 +12,7 @@ Contents
    intro
    getting_started
    examples
+   api
 
 Indices and tables
 ------------------

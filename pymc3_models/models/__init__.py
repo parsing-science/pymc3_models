@@ -136,7 +136,7 @@ class BayesianModel(BaseEstimator):
 
     def load(self, file_prefix, load_custom_params=False):
         """
-        Loads a saved version of the trace, v_params, and custom param files with the given file_prefix.
+        Loads a saved version of the trace, and custom param files with the given file_prefix.
 
         Parameters
         ----------
