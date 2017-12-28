@@ -84,6 +84,8 @@ class HierarchicalLogisticRegression(BayesianModel):
         self.num_cats = len(np.unique(cats))
         self.num_training_samples, self.num_pred = X.shape
 
+        self.inference_type = inference_type
+
         if not inference_args:
             inference_args = self._set_default_inference_args()
 

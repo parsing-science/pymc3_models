@@ -52,37 +52,37 @@ class HierarchicalLogisticRegressionTestCase(unittest.TestCase):
 class HierarchicalLogisticRegressionFitTestCase(HierarchicalLogisticRegressionTestCase):
     def test_fit_returns_correct_model(self):
         # Note: print is here so PyMC3 output won't overwrite the test name
-        print("")
-        self.test_HLR.fit(self.X_train, self.Y_train, self.cat_train)
+        print('')
+        self.test_HLR.fit(self.X_train, self.Y_train, self.cat_train, minibatch_size=2000)
 
         self.assertEqual(self.num_cats, self.test_HLR.num_cats)
         self.assertEqual(self.num_pred, self.test_HLR.num_pred)
 
         #TODO: Figure out best way to test
-        #np.testing.assert_almost_equal(self.alphas, self.test_HLR.advi_trace['alphas'].mean(), decimal=1)
-        #np.testing.assert_almost_equal(self.betas, self.test_HLR.advi_trace['betas'].mean(), decimal=1)
+        #np.testing.assert_almost_equal(self.alphas, self.test_HLR.trace['alphas'].mean(), decimal=1)
+        #np.testing.assert_almost_equal(self.betas, self.test_HLR.trace['betas'].mean(), decimal=1)
 
         # For now, just check that the estimated parameters have the correct signs
         np.testing.assert_equal(
             np.sign(self.alphas),
-            np.sign(self.test_HLR.advi_trace['alpha'].mean(axis=0))
+            np.sign(self.test_HLR.trace['alpha'].mean(axis=0))
         )
         np.testing.assert_equal(
             np.sign(self.betas),
-            np.sign(self.test_HLR.advi_trace['beta'].mean(axis=0))
+            np.sign(self.test_HLR.trace['beta'].mean(axis=0))
         )
 
 
 class HierarchicalLogisticRegressionPredictProbaTestCase(HierarchicalLogisticRegressionTestCase):
     def test_predict_proba_returns_probabilities(self):
-        print("")
-        self.test_HLR.fit(self.X_train, self.Y_train, self.cat_train)
+        print('')
+        self.test_HLR.fit(self.X_train, self.Y_train, self.cat_train, minibatch_size=2000)
         probs = self.test_HLR.predict_proba(self.X_test, self.cat_test)
         self.assertEqual(probs.shape, self.Y_test.shape)
 
     def test_predict_proba_returns_probabilities_and_std(self):
-        print("")
-        self.test_HLR.fit(self.X_train, self.Y_train, self.cat_train)
+        print('')
+        self.test_HLR.fit(self.X_train, self.Y_train, self.cat_train, minibatch_size=2000)
         probs, stds = self.test_HLR.predict_proba(self.X_test, self.cat_test, return_std=True)
         self.assertEqual(probs.shape, self.Y_test.shape)
         self.assertEqual(stds.shape, self.Y_test.shape)
@@ -92,22 +92,22 @@ class HierarchicalLogisticRegressionPredictProbaTestCase(HierarchicalLogisticReg
             test_HLR = HierarchicalLogisticRegression()
             test_HLR.predict_proba(self.X_train, self.cat_train)
 
-        expected = "Run fit on the model before predict."
+        expected = 'Run fit on the model before predict.'
         self.assertEqual(str(no_fit_error.exception), expected)
 
 
 class HierarchicalLogisticRegressionPredictTestCase(HierarchicalLogisticRegressionTestCase):
     def test_predict_returns_predictions(self):
-        print("")
-        self.test_HLR.fit(self.X_train, self.Y_train, self.cat_train)
+        print('')
+        self.test_HLR.fit(self.X_train, self.Y_train, self.cat_train, minibatch_size=2000)
         preds = self.test_HLR.predict(self.X_test, self.cat_test)
         self.assertEqual(preds.shape, self.Y_test.shape)
 
 
 class HierarchicalLogisticRegressionScoreTestCase(HierarchicalLogisticRegressionTestCase):
     def test_score_scores(self):
-        print("")
-        self.test_HLR.fit(self.X_train, self.Y_train, self.cat_train)
+        print('')
+        self.test_HLR.fit(self.X_train, self.Y_train, self.cat_train, minibatch_size=2000)
         score = self.test_HLR.score(self.X_test, self.Y_test, self.cat_test)
         naive_score = np.mean(self.Y_test)
         self.assertGreaterEqual(score, naive_score)
@@ -115,8 +115,8 @@ class HierarchicalLogisticRegressionScoreTestCase(HierarchicalLogisticRegression
 
 class HierarchicalLogisticRegressionSaveandLoadTestCase(HierarchicalLogisticRegressionTestCase):
     def test_save_and_load_work_correctly(self):
-        print("")
-        self.test_HLR.fit(self.X_train, self.Y_train, self.cat_train)
+        print('')
+        self.test_HLR.fit(self.X_train, self.Y_train, self.cat_train, minibatch_size=2000)
         probs1 = self.test_HLR.predict_proba(self.X_test, self.cat_test)
         self.test_HLR.save(self.test_dir)
 
@@ -126,7 +126,8 @@ class HierarchicalLogisticRegressionSaveandLoadTestCase(HierarchicalLogisticRegr
 
         self.assertEqual(self.test_HLR.num_cats, HLR2.num_cats)
         self.assertEqual(self.test_HLR.num_pred, HLR2.num_pred)
-        self.assertEqual(summary(self.test_HLR.advi_trace), summary(HLR2.advi_trace))
+        self.assertEqual(self.test_HLR.num_training_samples, HLR2.num_training_samples)
+        self.assertEqual(summary(self.test_HLR.trace), summary(HLR2.trace))
 
         probs2 = HLR2.predict_proba(self.X_test, self.cat_test)
 

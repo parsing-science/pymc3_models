@@ -39,7 +39,7 @@ class LinearRegressionTestCase(unittest.TestCase):
 class LinearRegressionFitTestCase(LinearRegressionTestCase):
     def test_advi_fit_returns_correct_model(self):
         # Note: print is here so PyMC3 output won't overwrite the test name
-        print("")
+        print('')
         self.test_LR.fit(self.X_train, self.Y_train)
 
         self.assertEqual(self.num_pred, self.test_LR.num_pred)
@@ -50,7 +50,7 @@ class LinearRegressionFitTestCase(LinearRegressionTestCase):
 
     def test_nuts_fit_returns_correct_model(self):
         # Note: print is here so PyMC3 output won't overwrite the test name
-        print("")
+        print('')
         self.nuts_LR.fit(self.X_train, self.Y_train, inference_type='nuts', inference_args={'draws': 2000})
 
         self.assertEqual(self.num_pred, self.nuts_LR.num_pred)
@@ -62,13 +62,13 @@ class LinearRegressionFitTestCase(LinearRegressionTestCase):
 
 class LinearRegressionPredictProbaTestCase(LinearRegressionTestCase):
     def test_predict_proba_returns_probabilities(self):
-        print("")
+        print('')
         self.test_LR.fit(self.X_train, self.Y_train)
         probs = self.test_LR.predict_proba(self.X_test)
         self.assertEqual(probs.shape, self.Y_test.shape)
 
     def test_predict_proba_returns_probabilities_and_std(self):
-        print("")
+        print('')
         self.test_LR.fit(self.X_train, self.Y_train)
         probs, stds = self.test_LR.predict_proba(self.X_test, return_std=True)
         self.assertEqual(probs.shape, self.Y_test.shape)
@@ -79,13 +79,13 @@ class LinearRegressionPredictProbaTestCase(LinearRegressionTestCase):
             test_LR = LinearRegression()
             test_LR.predict_proba(self.X_train)
 
-        expected = "Run fit on the model before predict."
+        expected = 'Run fit on the model before predict.'
         self.assertEqual(str(no_fit_error.exception), expected)
 
 
 class LinearRegressionPredictTestCase(LinearRegressionTestCase):
     def test_predict_returns_predictions(self):
-        print("")
+        print('')
         self.test_LR.fit(self.X_train, self.Y_train)
         preds = self.test_LR.predict(self.X_test)
         self.assertEqual(preds.shape, self.Y_test.shape)
@@ -93,7 +93,7 @@ class LinearRegressionPredictTestCase(LinearRegressionTestCase):
 
 class LinearRegressionScoreTestCase(LinearRegressionTestCase):
     def test_score_scores(self):
-        print("")
+        print('')
         skLR = skLinearRegression()
         skLR.fit(self.X_train, self.Y_train)
         skLR_score = skLR.score(self.X_test, self.Y_test)
@@ -105,7 +105,7 @@ class LinearRegressionScoreTestCase(LinearRegressionTestCase):
 
 class LinearRegressionSaveandLoadTestCase(LinearRegressionTestCase):
     def test_save_and_load_work_correctly(self):
-        print("")
+        print('')
         self.test_LR.fit(self.X_train, self.Y_train)
         score1 = self.test_LR.score(self.X_test, self.Y_test)
         self.test_LR.save(self.test_dir)

@@ -12,12 +12,12 @@ class BayesianModel(BaseEstimator):
     Bayesian model base class
     """
     def __init__(self):
-        self.trace = None
         self.cached_model = None
         self.inference_type = None
         self.num_pred = None
         self.shared_vars = None
         self.summary = None
+        self.trace = None
 
     def create_model(self):
         raise NotImplementedError
@@ -29,7 +29,16 @@ class BayesianModel(BaseEstimator):
         for key in shared_vars.keys():
             self.shared_vars[key].set_value(shared_vars[key])
 
-    def _inference(self, inference_type='advi', inference_args={}):
+    def _inference(self, inference_type='advi', inference_args=None):
+        """
+        Calls internal methods for two types of inferences. Raises an error if the inference_type is not supported.
+
+        Parameters
+        ==========
+        inference_type: string, specifies which inference method to call. Defaults to 'advi'. Currently, only 'advi' and 'nuts' are supported
+
+        inference_args: dict, arguments to be passed to the inference methods. Check the PyMC3 docs to see what is permitted. Defaults to None.
+        """
         if inference_type == 'advi':
             self._advi_inference(inference_args)
         elif inference_type == 'nuts':
@@ -39,13 +48,11 @@ class BayesianModel(BaseEstimator):
 
     def _advi_inference(self, inference_args):
         """
-        Runs minibatch variational ADVI and then sample from those results.
+        Runs variational ADVI and then samples from those results.
 
         Parameters
         ----------
-        minibatches: minibatches for ADVI
-
-        n: number of iterations for ADVI fit, defaults to 200000
+        inference_args: dict, arguments to be passed to the PyMC3 fit method. See PyMC3 doc for permissible values.
         """
         with self.cached_model:
             inference = pm.ADVI()
@@ -62,9 +69,7 @@ class BayesianModel(BaseEstimator):
 
         Parameters
         ----------
-        minibatches: minibatches for ADVI
-
-        n: number of iterations for ADVI fit, defaults to 200000
+        inference_args: dict, arguments to be passed to the PyMC3 sample method. See PyMC3 doc for permissible values.
         """
         with self.cached_model:
             step = pm.NUTS()
@@ -75,7 +80,15 @@ class BayesianModel(BaseEstimator):
 
     def _set_default_inference_args(self):
         """
-        Set some default values for inference
+        Set default values for inference arguments if none are provided, dependent on inference type.
+
+        ADVI:
+        callbacks: list containing a parameter stopping check.
+
+        n: number of iterations for ADVI fit, defaults to 200000
+
+        NUTS:
+        draws: the number of samples to draw, defaults to 2000
         """
         if self.inference_type == 'advi':
             inference_args = {
@@ -86,6 +99,8 @@ class BayesianModel(BaseEstimator):
             inference_args = {
                 'draws': 2000
             }
+        else:
+            inference_args = None
 
         return inference_args
 
@@ -147,6 +162,11 @@ class BayesianModel(BaseEstimator):
         """
         Plot the ELBO values after running ADVI minibatch.
         """
+        if self.inference_type != 'advi':
+            raise PyMC3ModelsError(
+                'This method should only be called after calling fit with ADVI minibatch.'
+            )
+
         sns.set_style("white")
         plt.plot(-self.advi_hist)
         plt.ylabel('ELBO')
