@@ -1,14 +1,10 @@
-================
 PyMC3 Models
 ================
 
 Custom PyMC3 models built on top of the scikit-learn API.
 
-Features
-========
-
 Installation
-========
+------------------
 The latest release of PyMC3 Models can be installed from PyPI using ``pip``:
 
 ::
@@ -22,8 +18,8 @@ The current development branch of PyMC3 Models can be installed from GitHub, als
     pip install git+https://github.com/parsing-science/pymc3_models.git
 
 Usage
-========
-Using PyMC3 Models is as simple as using scikit-learn.
+------------------
+Using PyMC3 Models is the same as using scikit-learn.
 
 ::
 
@@ -35,16 +31,20 @@ Using PyMC3 Models is as simple as using scikit-learn.
 
 
 Contribute
-========
-Please contribute to this project. For more info, see `CONTRIBUTE <https://github.com/parsing_science/pymc3_models/blob/master/CONTRIBUTE.rst>`__.
+------------------
+For more info, see `CONTRIBUTE <https://github.com/parsing_science/pymc3_models/blob/master/CONTRIBUTE.rst>`__.
 
 Contributor Code of Conduct
-========
-Please note that this project is released with a [Contributor Code of
-Conduct](http://contributor-covenant.org/). By participating in this project
+------------------------------------
+Please note that this project is released with a `Contributor Code of
+Conducthttp://contributor-covenant.org/`__. By participating in this project
 you agree to abide by its terms. See `CODE_OF_CONDUCT <https://github.com/parsing_science/pymc3_models/blob/master/CODE_OF_CONDUCT.rst>`__.
 
+Acknowledgments
+------------------
+This library is built on top of `PyMC3 <http://docs.pymc.io/>`__ and `scikit-learn <scikit-learn.org>`__.
+
 License
-========
+------------------
 `Apache License, Version 2.0 <https://github.com/parsing_science/pymc3_models/blob/master/LICENSE>`__
 

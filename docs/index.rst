@@ -1,22 +1,20 @@
 Welcome to PyMC3 Models's documentation!
 ========================================
 
-.. include:: ../../README.rst
+.. include:: ../README.rst
 
-Contents:
+Contents
+---------
 
 .. toctree::
    :maxdepth: 2
 
    intro
-   getting started
+   getting_started
    examples
-   api
-
-
 
 Indices and tables
-==================
+------------------
 
 * :ref:`genindex`
 * :ref:`modindex`
