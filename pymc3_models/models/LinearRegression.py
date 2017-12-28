@@ -39,7 +39,7 @@ class LinearRegression(BayesianModel):
 
         with model:
             alpha = pm.Normal('alpha', mu=0, sd=100, shape=(1))
-            betas = pm.Normal('betas', mu=0, sd=100, shape=(self.num_pred))
+            betas = pm.Normal('betas', mu=0, sd=100, shape=(1, self.num_pred))
 
             s = pm.HalfNormal('s', tau=1)
 

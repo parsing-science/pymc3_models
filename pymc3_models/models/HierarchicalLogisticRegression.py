@@ -49,11 +49,11 @@ class HierarchicalLogisticRegression(BayesianModel):
             sigma_beta = pm.HalfNormal('sigma_beta', sd=100)
 
             alpha = pm.Normal('alpha', mu=mu_alpha, sd=sigma_alpha, shape=(self.num_cats,))
-            beta = pm.Normal('beta', mu=mu_beta, sd=sigma_beta, shape=(self.num_cats, self.num_pred))
+            betas = pm.Normal('beta', mu=mu_beta, sd=sigma_beta, shape=(self.num_cats, self.num_pred))
 
             c = model_cats
 
-            temp = alpha[c] + T.sum(beta[c] * model_input, 1)
+            temp = alpha[c] + T.sum(betas[c] * model_input, 1)
 
             p = pm.invlogit(temp)
 
