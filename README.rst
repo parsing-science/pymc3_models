@@ -37,7 +37,7 @@ For more info, see `CONTRIBUTE <https://github.com/parsing_science/pymc3_models/
 Contributor Code of Conduct
 ------------------------------------
 Please note that this project is released with a `Contributor Code of
-Conducthttp://contributor-covenant.org/`__. By participating in this project
+Conduct <http://contributor-covenant.org/>`__. By participating in this project
 you agree to abide by its terms. See `CODE_OF_CONDUCT <https://github.com/parsing_science/pymc3_models/blob/master/CODE_OF_CONDUCT.rst>`__.
 
 Acknowledgments
