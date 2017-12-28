@@ -36,15 +36,15 @@ Using PyMC3 Models is as simple as using scikit-learn.
 
 Contribute
 ========
-Please contribute to this project. For more info, see `CONTRIBUTE <https://github.com/parsing_science/pymc3_models/blob/master/CONTRIBUTE.rst>`.
+Please contribute to this project. For more info, see `CONTRIBUTE <https://github.com/parsing_science/pymc3_models/blob/master/CONTRIBUTE.rst>`__.
 
 Contributor Code of Conduct
 ========
 Please note that this project is released with a [Contributor Code of
 Conduct](http://contributor-covenant.org/). By participating in this project
-you agree to abide by its terms. See `CODE_OF_CONDUCT <https://github.com/parsing_science/pymc3_models/blob/master/CODE_OF_CONDUCT.rst>`.
+you agree to abide by its terms. See `CODE_OF_CONDUCT <https://github.com/parsing_science/pymc3_models/blob/master/CODE_OF_CONDUCT.rst>`__.
 
 License
 ========
-`Apache License, Version
-2.0 <https://github.com/parsing_science/pymc3_models/blob/master/LICENSE>`__
+`Apache License, Version 2.0 <https://github.com/parsing_science/pymc3_models/blob/master/LICENSE>`__
+
