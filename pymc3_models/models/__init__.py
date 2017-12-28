@@ -35,9 +35,9 @@ class BayesianModel(BaseEstimator):
 
         Parameters
         ==========
-        inference_type: string, specifies which inference method to call. Defaults to 'advi'. Currently, only 'advi' and 'nuts' are supported
+        inference_type : string, specifies which inference method to call. Defaults to 'advi'. Currently, only 'advi' and 'nuts' are supported
 
-        inference_args: dict, arguments to be passed to the inference methods. Check the PyMC3 docs to see what is permitted. Defaults to None.
+        inference_args : dict, arguments to be passed to the inference methods. Check the PyMC3 docs to see what is permitted. Defaults to None.
         """
         if inference_type == 'advi':
             self._advi_inference(inference_args)
@@ -52,7 +52,7 @@ class BayesianModel(BaseEstimator):
 
         Parameters
         ----------
-        inference_args: dict, arguments to be passed to the PyMC3 fit method. See PyMC3 doc for permissible values.
+        inference_args : dict, arguments to be passed to the PyMC3 fit method. See PyMC3 doc for permissible values.
         """
         with self.cached_model:
             inference = pm.ADVI()
@@ -69,7 +69,7 @@ class BayesianModel(BaseEstimator):
 
         Parameters
         ----------
-        inference_args: dict, arguments to be passed to the PyMC3 sample method. See PyMC3 doc for permissible values.
+        inference_args : dict, arguments to be passed to the PyMC3 sample method. See PyMC3 doc for permissible values.
         """
         with self.cached_model:
             step = pm.NUTS()
@@ -82,13 +82,15 @@ class BayesianModel(BaseEstimator):
         """
         Set default values for inference arguments if none are provided, dependent on inference type.
 
-        ADVI:
-        callbacks: list containing a parameter stopping check.
+        ADVI
+        -----
+        callbacks : list containing a parameter stopping check.
 
-        n: number of iterations for ADVI fit, defaults to 200000
+        n : number of iterations for ADVI fit, defaults to 200000
 
-        NUTS:
-        draws: the number of samples to draw, defaults to 2000
+        NUTS
+        -----
+        draws : the number of samples to draw, defaults to 2000
         """
         if self.inference_type == 'advi':
             inference_args = {
@@ -119,11 +121,11 @@ class BayesianModel(BaseEstimator):
 
         Parameters
         ----------
-        file_prefix: str, path and prefix used to identify where to save the trace for this model.
-        Ex: given file_prefix = "path/to/file/"
-        This will attempt to save to "path/to/file/trace.pickle"
+        file_prefix : str, path and prefix used to identify where to save the trace for this model.
+            Ex: given file_prefix = "path/to/file/"
+            This will attempt to save to "path/to/file/trace.pickle"
 
-        custom_params: Dictionary of custom parameters to save. Defaults to None
+        custom_params : Dictionary of custom parameters to save. Defaults to None
         """
         fileObject = open(file_prefix + 'trace.pickle', 'wb')
         joblib.dump(self.trace, fileObject)
@@ -140,15 +142,15 @@ class BayesianModel(BaseEstimator):
 
         Parameters
         ----------
-        file_prefix: str, path and prefix used to identify where to load the saved trace for this model.
-        Ex: given file_prefix = "path/to/file/"
-        This will attempt to load "path/to/file/trace.pickle"
+        file_prefix : str, path and prefix used to identify where to load the saved trace for this model.
+            Ex: given file_prefix = "path/to/file/"
+            This will attempt to load "path/to/file/trace.pickle"
 
-        load_custom_params: Boolean flag to indicate whether custom parameters should be loaded. Defaults to False.
+        load_custom_params : Boolean flag to indicate whether custom parameters should be loaded. Defaults to False.
 
         Returns
         ----------
-        custom_params: Dictionary of custom parameters
+        custom_params : Dictionary of custom parameters
         """
         self.trace = joblib.load(file_prefix + 'trace.pickle')
 

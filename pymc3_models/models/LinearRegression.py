@@ -22,7 +22,9 @@ class LinearRegression(BayesianModel):
 
         Note: The size of the shared variables must match the size of the training data. Otherwise, setting the shared variables later will raise an error. See http://docs.pymc.io/advanced_theano.html
 
-        Returns the model.
+        Returns
+        ----------
+        the PyMC3 model
         """
         model_input = theano.shared(np.zeros([self.num_training_samples, self.num_pred]))
 
@@ -57,11 +59,11 @@ class LinearRegression(BayesianModel):
 
         y : numpy array, shape [n_samples, ]
 
-        inference_type: string, specifies which inference method to call. Defaults to 'advi'. Currently, only 'advi' and 'nuts' are supported
+        inference_type : string, specifies which inference method to call. Defaults to 'advi'. Currently, only 'advi' and 'nuts' are supported
 
-        minibatch_size: number of samples to include in each minibatch for ADVI, defaults to None, so minibatch is not run by default
+        minibatch_size : number of samples to include in each minibatch for ADVI, defaults to None, so minibatch is not run by default
 
-        inference_args: dict, arguments to be passed to the inference methods. Check the PyMC3 docs for permissable values. If no arguments are specified, default values will be set.
+        inference_args : dict, arguments to be passed to the inference methods. Check the PyMC3 docs for permissable values. If no arguments are specified, default values will be set.
         """
         self.num_training_samples, self.num_pred = X.shape
 
@@ -99,7 +101,7 @@ class LinearRegression(BayesianModel):
         ----------
         X : numpy array, shape [n_samples, n_features]
 
-        return_std: Boolean flag of whether to return standard deviations with mean values. Defaults to False.
+        return_std : Boolean flag of whether to return standard deviations with mean values. Defaults to False.
         """
 
         if self.trace is None:
