@@ -56,7 +56,7 @@ class LinearRegression(BayesianModel):
         inference_args=None
     ):
         """
-        Train the HLR model
+        Train the LR model
 
         Parameters
         ----------
@@ -87,7 +87,6 @@ class LinearRegression(BayesianModel):
 
                 inference_args['more_replacements'] = minibatches
         else:
-            print('setting shared vars')
             self._set_shared_vars({'model_input': X, 'model_output': y})
 
         self._inference(inference_type, inference_args)

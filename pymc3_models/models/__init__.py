@@ -17,6 +17,7 @@ class BayesianModel(BaseEstimator):
         self.inference_type = None
         self.num_pred = None
         self.shared_vars = None
+        self.summary = None
 
     def create_model(self):
         raise NotImplementedError
@@ -52,6 +53,7 @@ class BayesianModel(BaseEstimator):
 
         self.approx = approx
         self.trace = approx.sample(draws=10000)
+        self.summary = pm.df_summary(self.trace)
         self.advi_hist = inference.hist
 
     def _nuts_inference(self, inference_args):
@@ -69,6 +71,7 @@ class BayesianModel(BaseEstimator):
             nuts_trace = pm.sample(step=step, **inference_args)
 
         self.trace = nuts_trace
+        self.summary = pm.df_summary(self.trace)
 
     def _set_default_inference_args(self):
         """
