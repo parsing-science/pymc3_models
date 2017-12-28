@@ -21,6 +21,8 @@ class HierarchicalLogisticRegression(BayesianModel):
         """
         Creates and returns the PyMC3 model.
 
+        Note: The size of the shared variables must match the size of the training data. Otherwise, setting the shared variables later will raise an error. See http://docs.pymc.io/advanced_theano.html
+
         Returns the model.
         """
         model_input = theano.shared(np.zeros([self.num_training_samples, self.num_pred]))
@@ -57,17 +59,9 @@ class HierarchicalLogisticRegression(BayesianModel):
 
         return model
 
-    def fit(
-        self,
-        X,
-        y,
-        cats,
-        inference_type='advi',
-        minibatch_size=None,
-        inference_args=None
-    ):
+    def fit(self, X, y, cats, inference_type='advi', minibatch_size=None, inference_args=None):
         """
-        Train the HLR model
+        Train the Hierarchical Logistic Regression model
 
         Parameters
         ----------
@@ -77,14 +71,19 @@ class HierarchicalLogisticRegression(BayesianModel):
 
         cats: numpy array, shape [n_samples, ]
 
-        n: number of iterations for ADVI fit, defaults to 200000
+        inference_type: string, specifies which inference method to call. Defaults to 'advi'. Currently, only 'advi' and 'nuts' are supported
 
-        batch_size: number of samples to include in each minibatch for ADVI, defaults to 100
+        minibatch_size: number of samples to include in each minibatch for ADVI, defaults to None, so minibatch is not run by default
+
+        inference_args: dict, arguments to be passed to the inference methods. Check the PyMC3 docs for permissable values. If no arguments are specified, default values will be set.
         """
         self.num_cats = len(np.unique(cats))
         self.num_training_samples, self.num_pred = X.shape
 
         self.inference_type = inference_type
+
+        if y.ndim != 1:
+            y = np.squeeze(y)
 
         if not inference_args:
             inference_args = self._set_default_inference_args()
@@ -108,7 +107,7 @@ class HierarchicalLogisticRegression(BayesianModel):
 
     def predict_proba(self, X, cats, return_std=False):
         """
-        Predicts probabilities of new data with a trained HLR
+        Predicts probabilities of new data with a trained Hierarchical Logistic Regression
 
         Parameters
         ----------

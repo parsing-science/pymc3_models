@@ -10,7 +10,7 @@ from pymc3_models.models import BayesianModel
 
 class LinearRegression(BayesianModel):
     """
-    Custom Linear Regression built using PyMC3.
+    Linear Regression built using PyMC3.
     """
 
     def __init__(self):
@@ -20,7 +20,7 @@ class LinearRegression(BayesianModel):
         """
         Creates and returns the PyMC3 model.
 
-        Need num_samples to set size of shared variables. Otherwise, NUTS will mess up. See http://docs.pymc.io/advanced_theano.html
+        Note: The size of the shared variables must match the size of the training data. Otherwise, setting the shared variables later will raise an error. See http://docs.pymc.io/advanced_theano.html
 
         Returns the model.
         """
@@ -47,16 +47,9 @@ class LinearRegression(BayesianModel):
 
         return model
 
-    def fit(
-        self,
-        X,
-        y,
-        inference_type='advi',
-        minibatch_size=None,
-        inference_args=None
-    ):
+    def fit(self, X, y, inference_type='advi', minibatch_size=None, inference_args=None):
         """
-        Train the LR model
+        Train the Linear Regression model
 
         Parameters
         ----------
@@ -64,13 +57,18 @@ class LinearRegression(BayesianModel):
 
         y : numpy array, shape [n_samples, ]
 
-        n: number of iterations for ADVI fit, defaults to 200000
+        inference_type: string, specifies which inference method to call. Defaults to 'advi'. Currently, only 'advi' and 'nuts' are supported
 
-        batch_size: number of samples to include in each minibatch for ADVI, defaults to 100
+        minibatch_size: number of samples to include in each minibatch for ADVI, defaults to None, so minibatch is not run by default
+
+        inference_args: dict, arguments to be passed to the inference methods. Check the PyMC3 docs for permissable values. If no arguments are specified, default values will be set.
         """
         self.num_training_samples, self.num_pred = X.shape
 
         self.inference_type = inference_type
+
+        if y.ndim != 1:
+            y = np.squeeze(y)
 
         if not inference_args:
             inference_args = self._set_default_inference_args()
@@ -93,15 +91,15 @@ class LinearRegression(BayesianModel):
 
         return self
 
-    def predict_proba(self, X, return_std=False):
+    def predict(self, X, return_std=False):
         """
-        Predicts probabilities of new data with a trained HLR
+        Predicts values of new data with a trained Linear Regression model
 
         Parameters
         ----------
         X : numpy array, shape [n_samples, n_features]
 
-        return_std: Boolean flag of whether to return standard deviations with mean probabilities. Defaults to False.
+        return_std: Boolean flag of whether to return standard deviations with mean values. Defaults to False.
         """
 
         if self.trace is None:
@@ -120,18 +118,6 @@ class LinearRegression(BayesianModel):
             return ppc['y'].mean(axis=0), ppc['y'].std(axis=0)
         else:
             return ppc['y'].mean(axis=0)
-
-    def predict(self, X):
-        """
-        Predicts labels of new data with a trained model
-
-        Parameters
-        ----------
-        X : numpy array, shape [n_samples, n_features]
-        """
-        ppc_mean = self.predict_proba(X)
-
-        return ppc_mean
 
     def score(self, X, y):
         """

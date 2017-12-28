@@ -60,29 +60,6 @@ class LinearRegressionFitTestCase(LinearRegressionTestCase):
         np.testing.assert_almost_equal(self.s, self.nuts_LR.summary['mean']['s'], decimal=1)
 
 
-class LinearRegressionPredictProbaTestCase(LinearRegressionTestCase):
-    def test_predict_proba_returns_probabilities(self):
-        print('')
-        self.test_LR.fit(self.X_train, self.Y_train)
-        probs = self.test_LR.predict_proba(self.X_test)
-        self.assertEqual(probs.shape, self.Y_test.shape)
-
-    def test_predict_proba_returns_probabilities_and_std(self):
-        print('')
-        self.test_LR.fit(self.X_train, self.Y_train)
-        probs, stds = self.test_LR.predict_proba(self.X_test, return_std=True)
-        self.assertEqual(probs.shape, self.Y_test.shape)
-        self.assertEqual(stds.shape, self.Y_test.shape)
-
-    def test_predict_proba_raises_error_if_not_fit(self):
-        with self.assertRaises(PyMC3ModelsError) as no_fit_error:
-            test_LR = LinearRegression()
-            test_LR.predict_proba(self.X_train)
-
-        expected = 'Run fit on the model before predict.'
-        self.assertEqual(str(no_fit_error.exception), expected)
-
-
 class LinearRegressionPredictTestCase(LinearRegressionTestCase):
     def test_predict_returns_predictions(self):
         print('')
@@ -90,9 +67,24 @@ class LinearRegressionPredictTestCase(LinearRegressionTestCase):
         preds = self.test_LR.predict(self.X_test)
         self.assertEqual(preds.shape, self.Y_test.shape)
 
+    def test_predict_returns_mean_predictions_and_std(self):
+        print('')
+        self.test_LR.fit(self.X_train, self.Y_train)
+        preds, stds = self.test_LR.predict(self.X_test, return_std=True)
+        self.assertEqual(preds.shape, self.Y_test.shape)
+        self.assertEqual(stds.shape, self.Y_test.shape)
+
+    def test_predict_raises_error_if_not_fit(self):
+        with self.assertRaises(PyMC3ModelsError) as no_fit_error:
+            test_LR = LinearRegression()
+            test_LR.predict(self.X_train)
+
+        expected = 'Run fit on the model before predict.'
+        self.assertEqual(str(no_fit_error.exception), expected)
+
 
 class LinearRegressionScoreTestCase(LinearRegressionTestCase):
-    def test_score_scores(self):
+    def test_score_matches_sklearn_performance(self):
         print('')
         skLR = skLinearRegression()
         skLR.fit(self.X_train, self.Y_train)
