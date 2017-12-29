@@ -3,6 +3,12 @@ PyMC3 Models
 
 Custom PyMC3 models built on top of the scikit-learn API.
 
+Features
+------------------
+
+- Reusable PyMC3 models including LinearRegression and HierarchicalLogisticRegression
+- Base class, BayesianModel for building your own PyMC3 models
+
 Installation
 ------------------
 The latest release of PyMC3 Models can be installed from PyPI using ``pip``:
