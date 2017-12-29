@@ -48,7 +48,7 @@ Using PyMC3 Models is the same as using scikit-learn.
 
 Contribute
 ------------------
-For more info, see `CONTRIBUTE <https://github.com/parsing_science/pymc3_models/blob/master/CONTRIBUTE.rst>`__.
+For more info, see `CONTRIBUTING <https://github.com/parsing_science/pymc3_models/blob/master/CONTRIBUTING.rst>`__.
 
 Contributor Code of Conduct
 ------------------------------------
