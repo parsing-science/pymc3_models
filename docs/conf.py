@@ -33,10 +33,6 @@ sys.path.insert(0, os.path.abspath('../'))
 # ones.
 extensions = [
     'sphinx.ext.autosummary',
-    'matplotlib.sphinxext.mathmpl',
-    'matplotlib.sphinxext.only_directives',
-    'matplotlib.sphinxext.plot_directive',
-    'numpydoc',
     'sphinx.ext.autodoc',
     'sphinx.ext.coverage',
     'sphinx.ext.doctest',
@@ -46,7 +42,14 @@ extensions = [
     'sphinx.ext.napoleon',
     'sphinx.ext.todo',
     'sphinx.ext.viewcode',
+    'matplotlib.sphinxext.mathmpl',
+    'matplotlib.sphinxext.only_directives',
+    'matplotlib.sphinxext.plot_directive',
+    'numpydoc',
 ]
+
+#Napoleon settings
+napoleon_use_param = False
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

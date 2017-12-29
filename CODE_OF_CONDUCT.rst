@@ -1,6 +1,6 @@
-================
+============================
 CONTRIBUTOR CODE OF CONDUCT
-================
+============================
 
 As contributors and maintainers of this project, and in the interest of fostering an open and welcoming community, we pledge to respect all people who contribute through reporting issues, posting feature requests, updating documentation, submitting pull requests or patches, and other activities.
 
@@ -21,4 +21,4 @@ This code of conduct applies both within project spaces and in public spaces whe
 
 Instances of abusive, harassing, or otherwise unacceptable behavior may be reported by opening an issue or contacting one or more of the project maintainers.
 
-This Code of Conduct is adapted from the Contributor Covenant, version 1.2.0, available at https://www.contributor-covenant.org/version/1/2/0/code-of-conduct.html
+This Code of Conduct is adapted from the Contributor Covenant, version 1.2.0, available at https://www.contributor-covenant.org/version/1/2/0/code-of-conduct.html.

@@ -45,7 +45,7 @@ class LinearRegressionFitTestCase(LinearRegressionTestCase):
         self.assertEqual(self.num_pred, self.test_LR.num_pred)
 
         np.testing.assert_almost_equal(self.alpha, self.test_LR.summary['mean']['alpha__0'], decimal=1)
-        np.testing.assert_almost_equal(self.betas, self.test_LR.summary['mean']['betas__0'], decimal=1)
+        np.testing.assert_almost_equal(self.betas, self.test_LR.summary['mean']['betas__0_0'], decimal=1)
         np.testing.assert_almost_equal(self.s, self.test_LR.summary['mean']['s'], decimal=1)
 
     def test_nuts_fit_returns_correct_model(self):
@@ -56,7 +56,7 @@ class LinearRegressionFitTestCase(LinearRegressionTestCase):
         self.assertEqual(self.num_pred, self.nuts_LR.num_pred)
 
         np.testing.assert_almost_equal(self.alpha, self.nuts_LR.summary['mean']['alpha__0'], decimal=1)
-        np.testing.assert_almost_equal(self.betas, self.nuts_LR.summary['mean']['betas__0'], decimal=1)
+        np.testing.assert_almost_equal(self.betas, self.nuts_LR.summary['mean']['betas__0_0'], decimal=1)
         np.testing.assert_almost_equal(self.s, self.nuts_LR.summary['mean']['s'], decimal=1)
 
 

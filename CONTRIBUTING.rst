@@ -17,49 +17,56 @@ Pull Requests
 ------------------
 To create a PR against this library, please fork the project and work from there.
 
-Steps:
+Steps
+++++++
 
 1. Fork the project via the Fork button on Github
 
 2. Clone the repo to your local disk.
 
 3. Create a new branch for your PR.
-::
 
-    git checkout -b my-awesome-new-feature
+    ::
+
+        git checkout -b my-awesome-new-feature
 
 4. Install requirements (probably in a virtual environment)
-::
 
-    virtualenv venv
-    source venv/bin/activate
-    pip install -r requirements-dev.txt
-    pip install -r requirements.txt
+    ::
+
+        virtualenv venv
+        source venv/bin/activate
+        pip install -r requirements-dev.txt
+        pip install -r requirements.txt
 
 5. Develop your feature
    
 6. Submit a PR!
    
 PR Checklist
-=============
++++++++++++++
 
 - Ensure your code has followed the Style Guidelines below
 - Make sure you have written unittests where appropriate
 - Make sure the unittests pass
+
 ::
 
     source venv/bin/activate
     python -m unittest discover -cv
 
 - Update the docs where appropriate. You can rebuild them with the commands below.
+
 ::
 
     cd pymc3_models/docs
     sphinx-apidoc -f -o api/ ../pymc3_models/
     make html
 
+- Update the CHANGELOG
+
 Notes for new models
-=====================
+++++++++++++++++++++++++++
 
 - New models should be put into the models directory. 
 - Make the file name the same as the class name; be explicit, e.g. HierarchicalLogisticRegression, not HLR.
@@ -67,7 +74,8 @@ Notes for new models
 - [Optional] Please create a Jupyter notebook in the notebooks folder with the same name as your model class. In it, show a simple example of how to use your model. Synthetic data is fine to use.
 
 Style Guidelines
-=================
+++++++++++++++++++++++++++
+
 For the most part, this library follows PEP8 with a couple of exceptions. 
 
 Notes:

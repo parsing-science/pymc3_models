@@ -11,14 +11,16 @@ Quick intro to PyMC3
 --------------------
 When building a model with PyMC3, you will usually follow the same four steps:
 
-- *Step 1: Set up* Parameterize your model, choose priors, and insert training data
-- *Step 2: Inference* infer your parameters using MCMC sampling (e.g. NUTS) or variational inference (e.g. ADVI)
-- *Step 3: Interpret* Check your parameter distributions and model fit
-- *Step 4: Predict data* Create posterior samples with your inferred parameters
+- **Step 1: Set up** Parameterize your model, choose priors, and insert training data
+- **Step 2: Inference** infer your parameters using MCMC sampling (e.g. NUTS) or variational inference (e.g. ADVI)
+- **Step 3: Interpret** Check your parameter distributions and model fit
+- **Step 4: Predict data** Create posterior samples with your inferred parameters
+
+For a longer discussion of these steps, see :doc:`getting_started`.
 
 Mapping between scikit-learn and PyMC3
 --------------------------------------
-This library builds a mapping between the steps above with the methods used by scikit-learn models.scikit-learn.
+This library builds a mapping between the steps above with the methods used by scikit-learn models.
 
 +----------------+--------------------------------------+ 
 | scikit-learn   | PyMC3                                | 
@@ -39,6 +41,7 @@ The question marks represent things that don't exist in the two libraries on the
 
 Comparing scitkit-learn, PyMC3, and PyMC3 Models
 ------------------------------------------------
+Using the mapping above, this library creates easy to use PyMC3 models.
 
 +----------------------------+-------------+-------------+--------------+
 |                            |scikit-learn | PyMC3       | PyMC3 models | 
