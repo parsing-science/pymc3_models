@@ -4,7 +4,7 @@ Introduction to PyMC3 models
 This library was inspired by my own work creating a re-usable Hierarchical Logistic Regression model.
 
 To learn more, you can read this section, watch a 
-`video from PyData NYC 2017 <https://www.youtube.com/watch?v=zGRnirbHWJ8&list=PLGVZCDnMOq0oqs6RTJk4zZde86DZrgnzm&index=13>`__, or check out the 
+`video from PyData NYC 2017 <https://www.youtube.com/watch?v=zGRnirbHWJ8>`__, or check out the 
 `slides <https://github.com/parsing-science/pydata_nyc_nov_2017>`__ .
 
 Quick intro to PyMC3
