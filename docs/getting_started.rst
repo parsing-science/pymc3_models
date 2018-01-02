@@ -1,7 +1,7 @@
 Getting Started
 ========================================
 
-This section is adapted from my `2017 PyData NYC talk <https://www.youtube.com/watch?v=zGRnirbHWJ8&list=PLGVZCDnMOq0oqs6RTJk4zZde86DZrgnzm&index=13>`__. 
+This section is adapted from my `2017 PyData NYC talk <https://www.youtube.com/watch?v=zGRnirbHWJ8>`__. 
 
 To demonstrate how to get started with PyMC3 Models, I'll walk through a simple Linear Regression example. First, I'll go through the example using just PyMC3. Then I'll show you the same example using PyMC3 Models.
 
