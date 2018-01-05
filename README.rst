@@ -49,11 +49,11 @@ Since PyMC3 Models is built on top of scikit-learn, you can use the same methods
 
 Contribute
 ------------------
-For more info, see `CONTRIBUTING <https://github.com/parsing_science/pymc3_models/blob/master/CONTRIBUTING.rst>`__.
+For more info, see `CONTRIBUTING <https://github.com/parsing-science/pymc3_models/blob/master/CONTRIBUTING.rst>`__.
 
 Contributor Code of Conduct
 ------------------------------------
-Please note that this project is released with a `Contributor Code of Conduct <http://contributor-covenant.org/>`__. By participating in this project you agree to abide by its terms. See `CODE_OF_CONDUCT <https://github.com/parsing_science/pymc3_models/blob/master/CODE_OF_CONDUCT.rst>`__.
+Please note that this project is released with a `Contributor Code of Conduct <http://contributor-covenant.org/>`__. By participating in this project you agree to abide by its terms. See `CODE_OF_CONDUCT <https://github.com/parsing-science/pymc3_models/blob/master/CODE_OF_CONDUCT.rst>`__.
 
 Acknowledgments
 ------------------
