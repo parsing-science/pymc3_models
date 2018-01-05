@@ -99,3 +99,9 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+#Apple
+.DS_Store
+
+# Pickles
+notebooks/pickle_jar/
