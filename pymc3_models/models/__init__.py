@@ -18,6 +18,7 @@ class BayesianModel(BaseEstimator):
         self.shared_vars = None
         self.summary = None
         self.trace = None
+        self.default_advi_sample_draws = 10000
 
     def create_model(self):
         raise NotImplementedError
@@ -59,7 +60,7 @@ class BayesianModel(BaseEstimator):
             approx = pm.fit(method=inference, **inference_args)
 
         self.approx = approx
-        self.trace = approx.sample(draws=10000)
+        self.trace = approx.sample(draws=self.default_advi_sample_draws)
         self.summary = pm.df_summary(self.trace)
         self.advi_hist = inference.hist
 
