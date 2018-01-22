@@ -13,12 +13,12 @@ class BayesianModel(BaseEstimator):
     """
     def __init__(self):
         self.cached_model = None
+        self.default_advi_sample_draws = 10000
         self.inference_type = None
         self.num_pred = None
         self.shared_vars = None
         self.summary = None
         self.trace = None
-        self.default_advi_sample_draws = 10000
 
     def create_model(self):
         raise NotImplementedError
