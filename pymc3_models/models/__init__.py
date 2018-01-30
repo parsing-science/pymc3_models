@@ -13,6 +13,7 @@ class BayesianModel(BaseEstimator):
     """
     def __init__(self):
         self.cached_model = None
+        self.default_advi_sample_draws = 10000
         self.inference_type = None
         self.num_pred = None
         self.shared_vars = None
@@ -59,7 +60,7 @@ class BayesianModel(BaseEstimator):
             approx = pm.fit(method=inference, **inference_args)
 
         self.approx = approx
-        self.trace = approx.sample(draws=10000)
+        self.trace = approx.sample(draws=self.default_advi_sample_draws)
         self.summary = pm.df_summary(self.trace)
         self.advi_hist = inference.hist
 
