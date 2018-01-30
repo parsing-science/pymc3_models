@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
+## [1.1.0] - 2018-01-30
+### Added
+- New class property for default number of draws for advi sampling
+
 ## [1.0.3] - 2018-01-05
 ### Fixed
 - LICENSE file name changed to correct version
