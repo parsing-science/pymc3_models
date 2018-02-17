@@ -3,13 +3,11 @@ import tempfile
 import unittest
 
 import numpy as np
-import scipy.stats
-from pymc3 import summary
 from sklearn.model_selection import train_test_split
+import scipy.stats
 
-from pymc3_models.exc import  PyMC3ModelsError
 from pymc3_models import GaussianNaiveBayes
-
+from pymc3_models.exc import PyMC3ModelsError
 
 
 class GaussianNaiveBayesTestCase(unittest.TestCase):
@@ -66,7 +64,7 @@ class GaussianNaiveBayesFitTestCase(GaussianNaiveBayesTestCase):
         strategies to test probabilistic code.
         """
 
-        print('') # Berk
+        print('')
         
         # Check that the model correctly infers dimensions
         self.assertEqual(self.num_cats, self.test_GNB.num_classes)
@@ -87,11 +85,7 @@ class GaussianNaiveBayesFitTestCase(GaussianNaiveBayesTestCase):
 
 
 class GaussianNaiveBayesPredictProbaTest(GaussianNaiveBayesTestCase):
-    """ Test the predict_proba() method.
-    """
     def test_predict_proba_returns_probabilities_and_std(self):
-        """ Test the shape of the predicted probabilities and std.
-        """
         print('')
         probs, stds = self.test_GNB.predict_proba(self.X_test, return_std=True)
         self.assertEqual(probs.shape, self.Y_test.shape)
@@ -110,8 +104,6 @@ class GaussianNaiveBayesPredictProbaTest(GaussianNaiveBayesTestCase):
 
 
 class GaussianNaiveBayesPredictionTestCase(GaussianNaiveBayesTestCase):
-    """ Test the predict() method.
-    """
     def test_predict_returns_predictions(self):
         """ Test that the predict() function's  output has the correct shape.
         """
@@ -121,16 +113,12 @@ class GaussianNaiveBayesPredictionTestCase(GaussianNaiveBayesTestCase):
 
 
 class GaussianNaiveBayesScoreTestCase(GaussianNaiveBayesTestCase):
-    """ Test the score() method.
-    """
     def test_score_scores(self):
         print('')
         score = self.test_GNB.score(self.X_test, self.Y_test)
         # What to test for?
 
 class GaussianNaiveBayesSaveAndLoadTestCase(GaussianNaiveBayesTestCase):
-    """ Test the save() and load() method.
-    """
     def test_save_and_load_work_correctly(self):
         print('')
         probs1 = self.test_GNB.predict_proba(self.X_test)

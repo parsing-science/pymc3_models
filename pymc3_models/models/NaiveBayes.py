@@ -1,9 +1,10 @@
 import functools as ft
+
 import numpy as np
-import scipy.stats
-import theano
-from sklearn.metrics import accuracy_score
 import pymc3 as pm
+import scipy.stats
+from sklearn.metrics import accuracy_score
+import theano
 
 from pymc3_models.exc import PyMC3ModelsError
 from pymc3_models.models import BayesianModel
@@ -20,12 +21,11 @@ class GaussianNaiveBayes(BayesianModel):
     """ Naive Bayes classification built using PyMC3.
 
     The Gaussian Naive Bayes algorithm assumes that the random variables
-    describing each class and each feature are independent and distributed
+    that describe each class and each feature are independent and distributed
     according to independent Normal distributions.
 
     See the documentation of the `create_model` method for details on the model
     itself.  
-    
     """
 
     def __init__(self):
@@ -73,7 +73,6 @@ class GaussianNaiveBayes(BayesianModel):
         A PyMC3 model
 
         [1]: Murphy, K. P. (2012). Machine learning: a probabilistic perspective.
-
         """
         
         # The data
@@ -101,29 +100,29 @@ class GaussianNaiveBayes(BayesianModel):
 
         return model
 
-
     def fit(self, X, y, inference_type='advi', minibatch_size=None, inference_args=None):
         """ Train the Naive Bayes model.
 
         Parameters
         ----------
-        X (np.array): Numpy array of shape [n_samples, n_features] containing the 
-                      data points.
-        y (np.array): Numpy array of shape [n_samples,] containing the category 
-                      of the data points.
-        inference_type (string): Specifies which inference method to call. Default is
-                                 'advi'. Currently, only 'advi' and 'nuts'are
-                                 implemented.
-        minibatch_size (int): Number of samples to include in each minibatch for
-                              ADVI. Defaults to None so minibatch is not run by
-                              default.
-        inference_args (dict): Arguments to be passed to the inference methods. Check
-                               the PyMC3 documentation.
+        X : numpy array of shape [n_samples, n_features]. Contains the data
+            points.
+
+        y : numpy array of  shape [n_samples,]. Contains the category of the data
+            points.
+
+        inference_type : string, specifies which inference method to call.
+            Default is 'advi'. Currently, only 'advi' and 'nuts'are implemented.
+
+        minibatch_size : int, number of samples to include in each minibatch
+            for ADVI. Defaults to None so minibatch is not run by default.
+
+        inference_args : dict, arguments to be passed to the inference methods.
+            Check the PyMC3 documentation.
         
         Returns
         -------
         The current instance of the model.
-
         """
         self.n_samples, self.n_features = X.shape 
         self.n_classes = len(np.unique(y))
@@ -149,7 +148,6 @@ class GaussianNaiveBayes(BayesianModel):
         self._inference(inference_type, inference_args)
 
         return self
-
     
     def predict_proba(self, X):
         """ Predicts the probabilities that the data points belong to each
@@ -173,8 +171,8 @@ class GaussianNaiveBayes(BayesianModel):
         
         Parameters
         ----------
-        X (np.array): Numpy array of shape [n_samples, n_features] containing the 
-                      points for which we want to predict the class
+        X : numpy array of shape [n_samples, n_features]. Contains the points
+            for which we want to predict the class
 
         Returns
         -------
@@ -182,7 +180,6 @@ class GaussianNaiveBayes(BayesianModel):
         that each sample belong to each category.
 
         [1]: Murphy, K. P. (2012). Machine learning: a probabilistic perspective.
-
         """
         
         if self.trace is None:
@@ -196,41 +193,38 @@ class GaussianNaiveBayes(BayesianModel):
             if len(predictions) == 0:
                 predictions = prob_per_class
             else:
-                predictions = np.vstack((predictions, prob_per_class)) # Mutability, berk.
+                predictions = np.vstack((predictions, prob_per_class))
 
         return predictions
-
 
     def predict(self, X):
         """ Classify new data with a trained Naive Bayes model.
 
         Parameters
         ----------
-        X (np.array): Numpy array of shape [n_samples, n_features] with the 
-                      data to classify.
+        X : numpy array of shape [n_samples, n_features] that contains the data
+            to classify.
 
         Returns
         -------
         A numpy array of shape [n_samples,] that contains the predicted class to
         which the data points belong.
-
         """
         proba = self.predict_proba(X)
         pred = np.argmax(proba, axis=1)
         return pred
 
-
     def score(self, X, y):
-        """ Scores new data with a trained mode.
+        """ Scores new data with a trained model.
 
         Parameters
         ----------
-        X: numpy array, shape [n_samples, n_features]. Contains the data points.
-        y: numpy array, shape [n_samples,]. Contains the category of the data points.
+        X : numpy array, shape [n_samples, n_features]. Contains the data points.
+
+        y : numpy array, shape [n_samples,]. Contains the category of the data points.
         """
 
         return accuracy_score(y, self.predict(X))
-
 
     def save(self, file_prefix):
         params = {
@@ -238,9 +232,8 @@ class GaussianNaiveBayes(BayesianModel):
             'num_cats': self.n_classes,
             'num_pred': self.n_features,
             'num_training_samples': n_samples
-            }
+        }
         super(GaussianNaiveBayes, self).save(file_prefix, params)
-
     
     def load(self, file_profile):
         params = super(GaussianNaiveBayes, self).load(file_prefix, load_custom_params=True)
@@ -260,7 +253,7 @@ def normalize(array):
 
     Parameter
     --------
-    array: Numpy 1-d array of floats
+    array : numpy array of shape [1,]
 
     Returns
     -------
