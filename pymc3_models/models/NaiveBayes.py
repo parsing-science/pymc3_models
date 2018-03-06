@@ -13,7 +13,6 @@ from pymc3_models.models import BayesianModel
 __all__ = ["GaussianNaiveBayes"]
 
 
-
 # Gaussian Naive Bayes
 # -----------------------------------------------------------------------------
 
@@ -34,36 +33,38 @@ class GaussianNaiveBayes(BayesianModel):
     def create_model(self):
         """ Creates and returns the PyMC3 model.
 
-        Model
-        -----
-
-        We note $x_{jc}$ the value of the j-th element of the data vector $x$
-        conditionned on x belonging to the class $c$. The Gaussian Naive Bayes 
-        algorithm models $x_{jc}$ as:
-
-        $$x_{jc} \sim Normal(\mu_{jc}, \sigma_{jc})
+        We note :math:`x_{jc}` the value of the j-th element of the data vector :math:`x`
+        conditionned on x belonging to the class :math:`c`. The Gaussian Naive Bayes 
+        algorithm models :math:`x_{jc}` as:
         
-        While the probability that $x$ belongs to the class $c$ is given by the
+        .. math::
+
+            x_{jc} \\sim Normal(\\mu_{jc}, \\sigma_{jc})
+        
+        While the probability that :math:`x` belongs to the class :math:`c` is given by the
         categorical distribution:
-
-        $$P(y=c|x_i) = Cat(\pi_1, \dots, \pi_C)$$
-
-        where $\pi_i$ is the probability that a vector belongs to category $i$.
         
-        Priors
-        ------
+        .. math::
 
-        We assume that the $\pi_i$ follow a Dirichlet distribution:
+            P(y=c|x_i) = Cat(\\pi_1, \dots, \\pi_C)
 
-        $$\pi \sim Dirichlet(\alpha)$$
+        where :math:`\pi_i` is the probability that a vector belongs to category :math:`i`.
+        
+        We assume that the :math:`\pi_i` follow a Dirichlet distribution:
+        
+        .. math::
+            
+            \\pi \\sim Dirichlet(\\alpha)
 
-        with hyperparameter $\alpha = [1, .., 1]$. The $\mu_{jc}$ are sampled from
-        a Normal distribution centred on $0$ with variance $100$, and the $\sigma_{jc}$
-        are sampled from a HalfNormal distribuion of variance $100$:
+        with hyperparameter :math:`\\alpha = [1, .., 1]`. The :math:`\\mu_{jc}` are sampled from
+        a Normal distribution centred on :math:`0` with variance :math:`100`, and the :math:`\\sigma_{jc}`
+        are sampled from a HalfNormal distribuion of variance :math:`100`:
+        
+        .. math::
 
-        $$\mu_{jc} \sim Normal(0, 100)$$
+            \\mu_{jc} \\sim Normal(0, 100)
 
-        $$\sigma_{jc} \sim HalfNormal(100)$$
+            \\sigma_{jc} \\sim HalfNormal(100)
 
         Note that the Gaussian Naive Bayes model is equivalent to a Gaussian
         mixture with a diagonal covariance [1].
@@ -71,7 +72,9 @@ class GaussianNaiveBayes(BayesianModel):
         Returns
         -------
         A PyMC3 model
-
+        
+        References
+        ----------
         [1]: Murphy, K. P. (2012). Machine learning: a probabilistic perspective.
         """
         
@@ -153,21 +156,23 @@ class GaussianNaiveBayes(BayesianModel):
         """ Predicts the probabilities that the data points belong to each
         category.
 
-        Given a new data point $\vec{x}$, we want to estimate the probability that
-        it belongs to a category $c$. Following the notations in [1], the probability
+        Given a new data point :math:`\\vec{x}`, we want to estimate the probability that
+        it belongs to a category :math:`c`. Following the notations in [1], the probability
         reads:
+        
+        .. math::
 
-        $$P(y=c|\vec{x}, \mathcal{D}) = P(y=c|\mathcal{D}) \prod_{j=1}^{n_dims} P(x_j|y=c, \mathcal{D})$$
+            P(y=c|\\vec{x}, \\mathcal{D}) = P(y=c|\\mathcal{D}) \\prod_{j=1}^{n_{dims}} P(x_j|y=c, \\mathcal{D})
 
-        We previously used the data $\mathcal{D}$ to estimate the distribution of the
-        parameters $\vec{\mu}$, $\vec{\pi)$ and $\vec{\sigma}$. To compute the above
+        We previously used the data :math:`\\mathcal{D}` to estimate the distribution of the
+        parameters :math:`\\vec{\\mu}`, :math:`\\vec{\\pi}` and :math:`\\vec{\\sigma}`. To compute the above
         probability, we need to integrate over the values of these parameters:
 
-        $$
-        P(y=c|\vec{x}, \mathcal{D}) = \left[\int Cat(y=c|\vec{\pi})P(\vec{\pi}|\mathcal{D})\mathrm{d}\vec{\pi}\right] \\
-                                        \int P(\vec{x}|\vec{\mu}, \vec{\sigma})P(\vec{\mu}|\mathcal{D})P(\vec{\sigma}|\mathcal{D})\\
-                                        \mathrm{d}\vec{\mu}\mathrm{d}\vec{\sigma}
-        $$
+        .. math::
+
+            P(y=c|\\vec{x}, \\mathcal{D}) = \\left[\\int Cat(y=c|\\vec{\\pi})P(\\vec{\\pi}|\\mathcal{D})\\mathrm{d}\\vec{\\pi}\\right] \\
+                                        \\int P(\\vec{x}|\\vec{\\mu}, \\vec{\\sigma})P(\\vec{\\mu}|\\mathcal{D})P(\\vec{\\sigma}|\\mathcal{D})\\
+                                        \\mathrm{d}\\vec{\\mu}\\mathrm{d}\\vec{\\sigma}
         
         Parameters
         ----------
@@ -181,7 +186,7 @@ class GaussianNaiveBayes(BayesianModel):
 
         [1]: Murphy, K. P. (2012). Machine learning: a probabilistic perspective.
         """
-        
+ 
         if self.trace is None:
             raise PyMC3ModelsError("Run fit() on the model before predict()")
 
@@ -242,7 +247,6 @@ class GaussianNaiveBayes(BayesianModel):
         self.num_cats = params['num_cats']
         self.num_pred = params['num_pred']
         self.num_training_samples = params['num_training_samples']
-
 
 
 # Functions
