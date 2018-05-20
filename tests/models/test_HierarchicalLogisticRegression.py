@@ -3,6 +3,7 @@ import tempfile
 import unittest
 
 import numpy as np
+import pandas as pd
 from pymc3 import summary
 from sklearn.model_selection import train_test_split
 
@@ -127,7 +128,7 @@ class HierarchicalLogisticRegressionSaveandLoadTestCase(HierarchicalLogisticRegr
         self.assertEqual(self.test_HLR.num_cats, HLR2.num_cats)
         self.assertEqual(self.test_HLR.num_pred, HLR2.num_pred)
         self.assertEqual(self.test_HLR.num_training_samples, HLR2.num_training_samples)
-        self.assertEqual(summary(self.test_HLR.trace), summary(HLR2.trace))
+        pd.testing.assert_frame_equal(summary(self.test_HLR.trace), summary(HLR2.trace))
 
         probs2 = HLR2.predict_proba(self.X_test, self.cat_test)
 

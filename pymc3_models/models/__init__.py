@@ -61,7 +61,7 @@ class BayesianModel(BaseEstimator):
 
         self.approx = approx
         self.trace = approx.sample(draws=self.default_advi_sample_draws)
-        self.summary = pm.df_summary(self.trace)
+        self.summary = pm.summary(self.trace)
         self.advi_hist = inference.hist
 
     def _nuts_inference(self, inference_args):
@@ -77,7 +77,7 @@ class BayesianModel(BaseEstimator):
             nuts_trace = pm.sample(step=step, **inference_args)
 
         self.trace = nuts_trace
-        self.summary = pm.df_summary(self.trace)
+        self.summary = pm.summary(self.trace)
 
     def _set_default_inference_args(self):
         """
