@@ -128,7 +128,11 @@ class HierarchicalLogisticRegression(BayesianModel):
         if self.cached_model is None:
             self.cached_model = self.create_model()
 
-        self._set_shared_vars({'model_input': X, 'model_output': np.zeros(num_samples), 'model_cats': cats})
+        self._set_shared_vars({
+            'model_input': X,
+            'model_output': np.zeros(num_samples, dtype='int'),
+            'model_cats': cats
+        })
 
         ppc = pm.sample_ppc(self.trace, model=self.cached_model, samples=2000)
 
