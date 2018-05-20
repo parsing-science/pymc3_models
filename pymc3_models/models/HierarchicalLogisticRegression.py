@@ -29,7 +29,7 @@ class HierarchicalLogisticRegression(BayesianModel):
         """
         model_input = theano.shared(np.zeros([self.num_training_samples, self.num_pred]))
 
-        model_output = theano.shared(np.zeros(self.num_training_samples))
+        model_output = theano.shared(np.zeros(self.num_training_samples, dtype='int'))
 
         model_cats = theano.shared(np.zeros(self.num_training_samples, dtype='int'))
 

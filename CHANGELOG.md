@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
+## [1.1.1] - 2018-05-20
+### Fixed
+- Minibatches for ADVI in HLR require model_output to be cast as int
+
 ## [1.1.0] - 2018-01-30
 ### Added
 - New class property for default number of draws for advi sampling

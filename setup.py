@@ -15,7 +15,7 @@ with open('LICENSE') as l:
 
 setup(
     name='pymc3_models',
-    version='1.1.0',
+    version='1.1.1',
     description='Custom PyMC3 models built on top of the scikit-learn API',
     long_description=readme,
     author='Nicole Carlson',
