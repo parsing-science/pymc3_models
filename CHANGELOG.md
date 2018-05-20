@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
+## [1.1.2] - 2018-05-20
+### Fixed
+- df_summary deprecated in pymc3 release 3.3, changed to summary
+
 ## [1.1.1] - 2018-05-20
 ### Fixed
 - Minibatches for ADVI in HLR require model_output to be cast as int

@@ -15,7 +15,7 @@ with open('LICENSE') as l:
 
 setup(
     name='pymc3_models',
-    version='1.1.1',
+    version='1.1.2',
     description='Custom PyMC3 models built on top of the scikit-learn API',
     long_description=readme,
     author='Nicole Carlson',
@@ -31,7 +31,7 @@ setup(
         'matplotlib',
         'numpy',
         'pandas>=0.19',
-        'pymc3>=3.2',
+        'pymc3>=3.3',
         'scipy',
         'seaborn',
         'sklearn'

@@ -3,6 +3,7 @@ import tempfile
 import unittest
 
 import numpy as np
+import pandas as pd
 from pymc3 import summary
 from sklearn.linear_model import LinearRegression as skLinearRegression
 from sklearn.model_selection import train_test_split
@@ -109,7 +110,7 @@ class LinearRegressionSaveandLoadTestCase(LinearRegressionTestCase):
         self.assertEqual(self.test_LR.inference_type, LR2.inference_type)
         self.assertEqual(self.test_LR.num_pred, LR2.num_pred)
         self.assertEqual(self.test_LR.num_training_samples, LR2.num_training_samples)
-        self.assertEqual(summary(self.test_LR.trace), summary(LR2.trace))
+        pd.testing.assert_frame_equal(summary(self.test_LR.trace), summary(LR2.trace))
 
         score2 = LR2.score(self.X_test, self.Y_test)
 
