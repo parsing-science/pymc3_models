@@ -102,6 +102,12 @@ class HierarchicalLogisticRegression(BayesianModel):
                 }
 
                 inference_args['more_replacements'] = minibatches
+        else:
+            self._set_shared_vars({
+                'model_input': X,
+                'model_output': y,
+                'model_cats': cats
+            })
 
         self._inference(inference_type, inference_args)
 
