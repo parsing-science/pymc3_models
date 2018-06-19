@@ -99,7 +99,7 @@ class GaussianNaiveBayes(BayesianModel):
             # Priors
             alpha = np.ones(self.num_cats)
             pi = pm.Dirichlet('pi', alpha, shape=self.num_cats)
-            mu = pm.eormal('mu', mu=0, sd=100, shape=(self.num_cats, self.num_pred))
+            mu = pm.Normal('mu', mu=0, sd=100, shape=(self.num_cats, self.num_pred))
             sigma = pm.HalfNormal('sigma', 100, shape=(self.num_cats, self.num_pred))
 
             # Assign classes to data points
