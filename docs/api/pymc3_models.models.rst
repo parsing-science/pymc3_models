@@ -1,5 +1,8 @@
-models
+pymc3\_models\.models package
 =============================
+
+Submodules
+----------
 
 pymc3\_models\.models\.HierarchicalLogisticRegression module
 ------------------------------------------------------------

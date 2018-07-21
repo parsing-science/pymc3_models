@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
+## [1.1.4] - 2018-07-21
+### Added
+- sample method for LinearRegression model
+
 ## [1.1.3] - 2018-05-25
 ### Fixed
 - HLR fit method sets shared vars if no minibatch_size given
