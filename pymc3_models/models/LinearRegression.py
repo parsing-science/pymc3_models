@@ -93,17 +93,17 @@ class LinearRegression(BayesianModel):
 
         return self
 
-    def predict(self, X, return_std=False):
+
+    def sample(self, X, samples=2000):
         """
-        Predicts values of new data with a trained Linear Regression model
+        samples the conditional posterior estimates
 
         Parameters
         ----------
         X : numpy array, shape [n_samples, n_features]
 
-        return_std : Boolean flag of whether to return standard deviations with mean values. Defaults to False.
+        samples : number of draws to make for each point
         """
-
         if self.trace is None:
             raise PyMC3ModelsError('Run fit on the model before predict.')
 
@@ -115,6 +115,23 @@ class LinearRegression(BayesianModel):
         self._set_shared_vars({'model_input': X, 'model_output': np.zeros(num_samples)})
 
         ppc = pm.sample_ppc(self.trace, model=self.cached_model, samples=2000)
+
+        return ppc
+        
+    def predict(self, X, return_std=False, samples=2000):
+        """
+        Predicts values of new data with a trained Linear Regression model
+
+        Parameters
+        ----------
+        X : numpy array, shape [n_samples, n_features]
+
+        return_std : Boolean flag of whether to return standard deviations with mean values. Defaults to False.
+
+        samples: numberof draws to make for each input
+        """
+
+        ppc = self.sample(X, samples)
 
         if return_std:
             return ppc['y'].mean(axis=0), ppc['y'].std(axis=0)
