@@ -13,8 +13,19 @@ class LinearRegression(BayesianModel):
     Linear Regression built using PyMC3.
     """
 
-    def __init__(self):
+    def __init__(self,
+                 alpha_mu = 0,
+                 alpha_sd = 100,
+                 beta_mu  = 0,
+                 beta_sd  = 100,
+                 tau      = 1):
         super(LinearRegression, self).__init__()
+
+        self.alpha_mu = alpha_mu
+        self.alpha_sd = alpha_sd
+        self.beta_mu  = beta_mu
+        self.beta_sd  = beta_sd
+        self.tau      = tau
 
     def create_model(self):
         """
@@ -38,10 +49,10 @@ class LinearRegression(BayesianModel):
         model = pm.Model()
 
         with model:
-            alpha = pm.Normal('alpha', mu=0, sd=100, shape=(1))
-            betas = pm.Normal('betas', mu=0, sd=100, shape=(1, self.num_pred))
+            alpha = pm.Normal('alpha', mu=self.alpha_mu, sd=self.alpha_sd, shape=(1))
+            betas = pm.Normal('betas', mu=self.beta_mu, sd=self.beta_sd, shape=(1, self.num_pred))
 
-            s = pm.HalfNormal('s', tau=1)
+            s = pm.HalfNormal('s', tau=self.tau)
 
             mean = alpha + T.sum(betas * model_input, 1)
 
