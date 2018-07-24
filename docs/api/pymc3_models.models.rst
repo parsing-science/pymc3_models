@@ -1,16 +1,19 @@
-models
-=============================
+pymc3\_models.models package
+============================
 
-pymc3\_models\.models\.HierarchicalLogisticRegression module
-------------------------------------------------------------
+Submodules
+----------
+
+pymc3\_models.models.HierarchicalLogisticRegression module
+----------------------------------------------------------
 
 .. automodule:: pymc3_models.models.HierarchicalLogisticRegression
     :members:
     :undoc-members:
     :show-inheritance:
 
-pymc3\_models\.models\.LinearRegression module
-----------------------------------------------
+pymc3\_models.models.LinearRegression module
+--------------------------------------------
 
 .. automodule:: pymc3_models.models.LinearRegression
     :members:

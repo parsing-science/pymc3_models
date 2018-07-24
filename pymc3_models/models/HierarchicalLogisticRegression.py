@@ -13,9 +13,22 @@ class HierarchicalLogisticRegression(BayesianModel):
     Custom Hierachical Logistic Regression built using PyMC3.
     """
 
-    def __init__(self):
+    def __init__(self,
+                 mu_alpha_mu    = 0.0,
+                 mu_alpha_sd    = 100.0,
+                 sigma_alpha_sd = 100.0,
+                 mu_beta_mu     = 0.0,
+                 mu_beta_sd     = 100.0,
+                 sigma_beta_sd  = 100.0):
         super(HierarchicalLogisticRegression, self).__init__()
         self.num_cats = None
+
+        self.mu_alpha_mu    = mu_alpha_mu
+        self.mu_alpha_sd    = mu_alpha_sd
+        self.sigma_alpha_sd = sigma_alpha_sd
+        self.mu_beta_mu     = mu_beta_mu
+        self.mu_beta_sd     = mu_beta_sd
+        self.sigma_beta_sd  = sigma_beta_sd
 
     def create_model(self):
         """
@@ -42,11 +55,11 @@ class HierarchicalLogisticRegression(BayesianModel):
         model = pm.Model()
 
         with model:
-            mu_alpha = pm.Normal('mu_alpha', mu=0, sd=100)
-            sigma_alpha = pm.HalfNormal('sigma_alpha', sd=100)
+            mu_alpha = pm.Normal('mu_alpha', mu=self.mu_alpha_mu, sd=self.mu_alpha_sd)
+            sigma_alpha = pm.HalfNormal('sigma_alpha', sd=self.sigma_alpha_sd)
 
-            mu_beta = pm.Normal('mu_beta', mu=0, sd=100)
-            sigma_beta = pm.HalfNormal('sigma_beta', sd=100)
+            mu_beta = pm.Normal('mu_beta', mu=self.mu_beta_mu, sd=self.mu_beta_sd)
+            sigma_beta = pm.HalfNormal('sigma_beta', sd=self.sigma_beta_sd)
 
             alpha = pm.Normal('alpha', mu=mu_alpha, sd=sigma_alpha, shape=(self.num_cats,))
             betas = pm.Normal('beta', mu=mu_beta, sd=sigma_beta, shape=(self.num_cats, self.num_pred))

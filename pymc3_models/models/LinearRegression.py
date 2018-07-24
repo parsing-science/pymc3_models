@@ -13,8 +13,19 @@ class LinearRegression(BayesianModel):
     Linear Regression built using PyMC3.
     """
 
-    def __init__(self):
+    def __init__(self,
+                 alpha_mu = 0,
+                 alpha_sd = 100,
+                 beta_mu  = 0,
+                 beta_sd  = 100,
+                 tau      = 1):
         super(LinearRegression, self).__init__()
+
+        self.alpha_mu = alpha_mu
+        self.alpha_sd = alpha_sd
+        self.beta_mu  = beta_mu
+        self.beta_sd  = beta_sd
+        self.tau      = tau
 
     def create_model(self):
         """
@@ -38,10 +49,10 @@ class LinearRegression(BayesianModel):
         model = pm.Model()
 
         with model:
-            alpha = pm.Normal('alpha', mu=0, sd=100, shape=(1))
-            betas = pm.Normal('betas', mu=0, sd=100, shape=(1, self.num_pred))
+            alpha = pm.Normal('alpha', mu=self.alpha_mu, sd=self.alpha_sd, shape=(1))
+            betas = pm.Normal('betas', mu=self.beta_mu, sd=self.beta_sd, shape=(1, self.num_pred))
 
-            s = pm.HalfNormal('s', tau=1)
+            s = pm.HalfNormal('s', tau=self.tau)
 
             mean = alpha + T.sum(betas * model_input, 1)
 
@@ -93,17 +104,17 @@ class LinearRegression(BayesianModel):
 
         return self
 
-    def predict(self, X, return_std=False):
+
+    def sample(self, X, samples=2000):
         """
-        Predicts values of new data with a trained Linear Regression model
+        samples the conditional posterior estimates
 
         Parameters
         ----------
         X : numpy array, shape [n_samples, n_features]
 
-        return_std : Boolean flag of whether to return standard deviations with mean values. Defaults to False.
+        samples : number of draws to make for each point
         """
-
         if self.trace is None:
             raise PyMC3ModelsError('Run fit on the model before predict.')
 
@@ -115,6 +126,23 @@ class LinearRegression(BayesianModel):
         self._set_shared_vars({'model_input': X, 'model_output': np.zeros(num_samples)})
 
         ppc = pm.sample_ppc(self.trace, model=self.cached_model, samples=2000)
+
+        return ppc
+        
+    def predict(self, X, return_std=False, samples=2000):
+        """
+        Predicts values of new data with a trained Linear Regression model
+
+        Parameters
+        ----------
+        X : numpy array, shape [n_samples, n_features]
+
+        return_std : Boolean flag of whether to return standard deviations with mean values. Defaults to False.
+
+        samples: numberof draws to make for each input
+        """
+
+        ppc = self.sample(X, samples)
 
         if return_std:
             return ppc['y'].mean(axis=0), ppc['y'].std(axis=0)
