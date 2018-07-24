@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
+## [1.1.5] - 2018-07-21
+### Added
+- setting parameters for different models
+
 ## [1.1.4] - 2018-07-21
 ### Added
 - sample method for LinearRegression model

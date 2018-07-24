@@ -11,8 +11,8 @@ Subpackages
 Submodules
 ----------
 
-pymc3\_models\.exc module
--------------------------
+pymc3\_models.exc module
+------------------------
 
 .. automodule:: pymc3_models.exc
     :members:
