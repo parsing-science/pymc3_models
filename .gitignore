@@ -105,3 +105,6 @@ ENV/
 
 # Pickles
 notebooks/pickle_jar/
+
+# IDE
+.idea/
