@@ -40,7 +40,7 @@ class GaussianProcessRegressionTestCase(unittest.TestCase):
         )
 
         self.test_GPR = GaussianProcessRegression()
-        self.test_nuts_GPR = GaussianProcessRegression()
+        # self.test_nuts_GPR = GaussianProcessRegression()
         self.test_dir = tempfile.mkdtemp()
 
     def tearDown(self):
@@ -64,21 +64,21 @@ class GaussianProcessRegressionFitTestCase(GaussianProcessRegressionTestCase):
                                int(self.test_GPR.summary['mean']['noise_variance__0']),
                                0)
 
-    def test_nuts_fit_returns_correct_model(self):
-        # This print statement ensures PyMC3 output won't overwrite the test name
-        print('')
-        self.test_nuts_GPR.fit(self.X_train, self.y_train, inference_type='nuts')
-
-        self.assertEqual(self.num_pred, self.test_nuts_GPR.num_pred)
-        self.assertAlmostEqual(self.signal_variance,
-                               int(self.test_nuts_GPR.summary['mean']['signal_variance__0']),
-                               0)
-        self.assertAlmostEqual(self.length_scale,
-                               int(self.test_nuts_GPR.summary['mean']['length_scale__0_0']),
-                               0)
-        self.assertAlmostEqual(self.noise_variance,
-                               int(self.test_nuts_GPR.summary['mean']['noise_variance__0']),
-                               0)
+    # def test_nuts_fit_returns_correct_model(self):
+    #     # This print statement ensures PyMC3 output won't overwrite the test name
+    #     print('')
+    #     self.test_nuts_GPR.fit(self.X_train, self.y_train, inference_type='nuts')
+    #
+    #     self.assertEqual(self.num_pred, self.test_nuts_GPR.num_pred)
+    #     self.assertAlmostEqual(self.signal_variance,
+    #                            int(self.test_nuts_GPR.summary['mean']['signal_variance__0']),
+    #                            0)
+    #     self.assertAlmostEqual(self.length_scale,
+    #                            int(self.test_nuts_GPR.summary['mean']['length_scale__0_0']),
+    #                            0)
+    #     self.assertAlmostEqual(self.noise_variance,
+    #                            int(self.test_nuts_GPR.summary['mean']['noise_variance__0']),
+    #                            0)
 
 
 class GaussianProcessRegressionPredictTestCase(GaussianProcessRegressionTestCase):
