@@ -3,8 +3,10 @@ import tempfile
 import unittest
 
 import numpy as np
-from sklearn.model_selection import train_test_split
+import pandas as pd
+from pymc3 import summary
 import scipy.stats
+from sklearn.model_selection import train_test_split
 
 from pymc3_models import GaussianNaiveBayes
 from pymc3_models.exc import PyMC3ModelsError
@@ -76,11 +78,12 @@ class GaussianNaiveBayesFitTestCase(GaussianNaiveBayesTestCase):
         # TODO: Diagnose the sampling with a reasonable sampling size?
         np.testing.assert_equal(
             np.sign(self.pi),
-            np.sign(self.test_GNB.trace['pi'].mean(axis=0))) 
+            np.sign(self.test_GNB.trace['pi'].mean(axis=0))
+        ) 
         np.testing.assert_equal(
             np.sign(self.sigma),
             np.sign(self.test_GNB.trace['sigma'].mean(axis=0))
-            )
+        )
 
 
 class GaussianNaiveBayesPredictProbaTest(GaussianNaiveBayesTestCase):
@@ -93,7 +96,7 @@ class GaussianNaiveBayesPredictProbaTest(GaussianNaiveBayesTestCase):
         with self.assertRaises(PyMC3ModelsError) as no_fit_error:
             test_GNB = GaussianNaiveBayes()
             test_GNB.predict_proba(self.X_train)
-        expected = 'Run fit() on the model before predict()'  # precarious, define a new Exception type
+        expected = 'Run fit() on the model before predict()'
         self.assertEqual(str(no_fit_error.exception), expected)
 
 
@@ -107,17 +110,26 @@ class GaussianNaiveBayesPredictionTestCase(GaussianNaiveBayesTestCase):
         self.assertEqual(preds.shape, self.Y_test.shape)
 
 
+@unittest.skip('test not implemented yet')
 class GaussianNaiveBayesScoreTestCase(GaussianNaiveBayesTestCase):
     def test_score_scores(self):
         print('')
+        # TODO: Figure out how to test the score function
         score = self.test_GNB.score(self.X_test, self.Y_test)
-        # What to test for?
 
 
 class GaussianNaiveBayesSaveAndLoadTestCase(GaussianNaiveBayesTestCase):
     def test_save_and_load_work_correctly(self):
         print('')
-        probs = self.test_GNB.predict_proba(self.X_test)
+        probs1 = self.test_GNB.predict_proba(self.X_test)
         self.test_GNB.save(self.test_dir)
+
         GNB2 = GaussianNaiveBayes()
         GNB2.load(self.test_dir)
+        self.assertEqual(self.test_GNB.num_cats, GNB2.num_cats)
+        self.assertEqual(self.test_GNB.num_pred, GNB2.num_pred)
+        self.assertEqual(self.test_GNB.num_training_samples, GNB2.num_training_samples)
+        pd.testing.assert_frame_equal(summary(self.test_GNB.trace), summary(GNB2.trace))
+
+        probs2 = GNB2.predict_proba(self.X_test)
+        np.testing.assert_almost_equal(probs2, probs1, decimal=1)
