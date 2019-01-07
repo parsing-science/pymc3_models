@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 ## [1.2.0] - 2019-01-07
 ### Added
 - flake8 linting
-- _version.py file
+- version file
 - less strict version requirements in requirements.txt
 
 ## [1.1.3] - 2018-05-25
