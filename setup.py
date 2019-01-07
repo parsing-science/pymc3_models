@@ -12,9 +12,8 @@ with open('LICENSE') as l:
 with open('pymc3_models/_version.py') as version_file:
     exec(version_file.read())
 
-with open('README.rst') as r:
+with open('README.md') as r:
     readme = r.read()
-
 
 
 setup(
@@ -22,6 +21,7 @@ setup(
     version=__version__,
     description='Custom PyMC3 models built on top of the scikit-learn API',
     long_description=readme,
+    long_description_content_type='text/markdown'
     author='Nicole Carlson',
     author_email='nicole@parsingscience.com',
     url='https://github.com/parsing-science/pymc3_models',
