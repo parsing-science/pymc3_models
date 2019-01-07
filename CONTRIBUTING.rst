@@ -51,6 +51,7 @@ PR Checklist
 
 ::
 
+    source venv/bin/activate
     flake8 pymc3_models tests
 
 - Make sure you have written unittests where appropriate
