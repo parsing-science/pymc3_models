@@ -25,7 +25,7 @@ class LinearRegression(BayesianModel):
         See http://docs.pymc.io/advanced_theano.html
 
         Returns
-        ----------
+        -------
         the PyMC3 model
         """
         model_input = theano.shared(np.zeros([self.num_training_samples, self.num_pred]))
@@ -57,19 +57,24 @@ class LinearRegression(BayesianModel):
 
         Parameters
         ----------
-        X : numpy array, shape [n_samples, n_features]
+        X : numpy array
+            shape [n_samples, n_features]
 
-        y : numpy array, shape [n_samples, ]
+        y : numpy array
+            shape [n_samples, ]
 
-        inference_type : string, specifies which inference method to call. Defaults to 'advi'.
+        inference_type : str (defaults to 'advi')
+            specifies which inference method to call
             Currently, only 'advi' and 'nuts' are supported
 
-        minibatch_size : number of samples to include in each minibatch for ADVI.
-            Defaults to None, so minibatch is not run by default
+        minibatch_size : int (defaults to None)
+            number of samples to include in each minibatch for ADVI
+            If None, minibatch is not run
 
-        inference_args : dict, arguments to be passed to the inference methods.
+        inference_args : dict (defaults to None)
+            arguments to be passed to the inference methods.
             Check the PyMC3 docs for permissable values.
-            If no arguments are specified, default values will be set.
+            If None, default values will be set.
         """
         self.num_training_samples, self.num_pred = X.shape
 
@@ -105,10 +110,11 @@ class LinearRegression(BayesianModel):
 
         Parameters
         ----------
-        X : numpy array, shape [n_samples, n_features]
+        X : numpy array
+            shape [n_samples, n_features]
 
-        return_std : Boolean flag of whether to return standard deviations with mean values.
-            Defaults to False.
+        return_std : bool (defaults to False)
+            flag of whether to return standard deviations with mean values
         """
 
         if self.trace is None:
@@ -134,9 +140,11 @@ class LinearRegression(BayesianModel):
 
         Parameters
         ----------
-        X : numpy array, shape [n_samples, n_features]
+        X : numpy array
+            shape [n_samples, n_features]
 
-        y : numpy array, shape [n_samples, ]
+        y : numpy array
+            shape [n_samples, ]
         """
 
         return r2_score(y, self.predict(X))
