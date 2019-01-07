@@ -32,13 +32,16 @@ class BayesianModel(BaseEstimator):
 
     def _inference(self, inference_type='advi', inference_args=None):
         """
-        Calls internal methods for two types of inferences. Raises an error if the inference_type is not supported.
+        Calls internal methods for two types of inferences.
+        Raises an error if the inference_type is not supported.
 
         Parameters
         ==========
-        inference_type : string, specifies which inference method to call. Defaults to 'advi'. Currently, only 'advi' and 'nuts' are supported
+        inference_type : string, specifies which inference method to call. Defaults to 'advi'.
+            Currently, only 'advi' and 'nuts' are supported
 
-        inference_args : dict, arguments to be passed to the inference methods. Check the PyMC3 docs to see what is permitted. Defaults to None.
+        inference_args : dict, arguments to be passed to the inference methods.
+            Check the PyMC3 docs to see what is permitted. Defaults to None.
         """
         if inference_type == 'advi':
             self._advi_inference(inference_args)
@@ -53,7 +56,8 @@ class BayesianModel(BaseEstimator):
 
         Parameters
         ----------
-        inference_args : dict, arguments to be passed to the PyMC3 fit method. See PyMC3 doc for permissible values.
+        inference_args : dict, arguments to be passed to the PyMC3 fit method.
+            See PyMC3 doc for permissible values.
         """
         with self.cached_model:
             inference = pm.ADVI()
@@ -70,7 +74,8 @@ class BayesianModel(BaseEstimator):
 
         Parameters
         ----------
-        inference_args : dict, arguments to be passed to the PyMC3 sample method. See PyMC3 doc for permissible values.
+        inference_args : dict, arguments to be passed to the PyMC3 sample method.
+            See PyMC3 doc for permissible values.
         """
         with self.cached_model:
             step = pm.NUTS()
@@ -147,7 +152,8 @@ class BayesianModel(BaseEstimator):
             Ex: given file_prefix = "path/to/file/"
             This will attempt to load "path/to/file/trace.pickle"
 
-        load_custom_params : Boolean flag to indicate whether custom parameters should be loaded. Defaults to False.
+        load_custom_params : Boolean flag to indicate whether custom parameters should be loaded.
+            Defaults to False.
 
         Returns
         ----------
