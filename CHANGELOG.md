@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 - flake8 linting
 - version file
 - less strict version requirements in requirements.txt
+- PR template
 
 ## [1.1.3] - 2018-05-25
 ### Fixed
