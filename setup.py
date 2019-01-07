@@ -21,7 +21,7 @@ setup(
     version=__version__,
     description='Custom PyMC3 models built on top of the scikit-learn API',
     long_description=readme,
-    long_description_content_type='text/markdown'
+    long_description_content_type='text/markdown',
     author='Nicole Carlson',
     author_email='nicole@parsingscience.com',
     url='https://github.com/parsing-science/pymc3_models',
