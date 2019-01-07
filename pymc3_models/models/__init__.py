@@ -32,13 +32,18 @@ class BayesianModel(BaseEstimator):
 
     def _inference(self, inference_type='advi', inference_args=None):
         """
-        Calls internal methods for two types of inferences. Raises an error if the inference_type is not supported.
+        Calls internal methods for two types of inferences.
+        Raises an error if the inference_type is not supported.
 
         Parameters
-        ==========
-        inference_type : string, specifies which inference method to call. Defaults to 'advi'. Currently, only 'advi' and 'nuts' are supported
+        ----------
+        inference_type : str (defaults to 'advi')
+            specifies which inference method to call
+            Currently, only 'advi' and 'nuts' are supported.
 
-        inference_args : dict, arguments to be passed to the inference methods. Check the PyMC3 docs to see what is permitted. Defaults to None.
+        inference_args : dict (defaults to None)
+            arguments to be passed to the inference methods
+            Check the PyMC3 docs to see what is permitted.
         """
         if inference_type == 'advi':
             self._advi_inference(inference_args)
@@ -53,7 +58,9 @@ class BayesianModel(BaseEstimator):
 
         Parameters
         ----------
-        inference_args : dict, arguments to be passed to the PyMC3 fit method. See PyMC3 doc for permissible values.
+        inference_args : dict
+            arguments to be passed to the PyMC3 fit method
+            See PyMC3 doc for permissible values.
         """
         with self.cached_model:
             inference = pm.ADVI()
@@ -70,7 +77,9 @@ class BayesianModel(BaseEstimator):
 
         Parameters
         ----------
-        inference_args : dict, arguments to be passed to the PyMC3 sample method. See PyMC3 doc for permissible values.
+        inference_args : dict
+            arguments to be passed to the PyMC3 sample method
+            See PyMC3 doc for permissible values.
         """
         with self.cached_model:
             step = pm.NUTS()
@@ -83,15 +92,18 @@ class BayesianModel(BaseEstimator):
         """
         Set default values for inference arguments if none are provided, dependent on inference type.
 
-        ADVI
-        -----
-        callbacks : list containing a parameter stopping check.
+        ADVI Default Parameters
+        -----------------------
+        callbacks : list
+            contains a parameter stopping check.
 
-        n : number of iterations for ADVI fit, defaults to 200000
+        n : int (defaults to 200000)
+            number of iterations for ADVI fit
 
-        NUTS
-        -----
-        draws : the number of samples to draw, defaults to 2000
+        NUTS Default Parameters
+        -----------------------
+        draws : int (defaults to 2000)
+            number of samples to draw
         """
         if self.inference_type == 'advi':
             inference_args = {
@@ -122,11 +134,13 @@ class BayesianModel(BaseEstimator):
 
         Parameters
         ----------
-        file_prefix : str, path and prefix used to identify where to save the trace for this model.
-            Ex: given file_prefix = "path/to/file/"
-            This will attempt to save to "path/to/file/trace.pickle"
+        file_prefix : str
+            path and prefix used to identify where to save the trace for this model,
+            e.g. given file_prefix = 'path/to/file/'
+            This will attempt to save to 'path/to/file/trace.pickle'.
 
-        custom_params : Dictionary of custom parameters to save. Defaults to None
+        custom_params : dict (defaults to None)
+            Custom parameters to save
         """
         fileObject = open(file_prefix + 'trace.pickle', 'wb')
         joblib.dump(self.trace, fileObject)
@@ -143,11 +157,13 @@ class BayesianModel(BaseEstimator):
 
         Parameters
         ----------
-        file_prefix : str, path and prefix used to identify where to load the saved trace for this model.
-            Ex: given file_prefix = "path/to/file/"
-            This will attempt to load "path/to/file/trace.pickle"
+        file_prefix : str
+            path and prefix used to identify where to load the saved trace for this model,
+            e.g. given file_prefix = 'path/to/file/'
+            This will attempt to load 'path/to/file/trace.pickle'.
 
-        load_custom_params : Boolean flag to indicate whether custom parameters should be loaded. Defaults to False.
+        load_custom_params : bool (defaults to False)
+            flag to indicate whether custom parameters should be loaded
 
         Returns
         ----------
@@ -170,7 +186,7 @@ class BayesianModel(BaseEstimator):
                 'This method should only be called after calling fit with ADVI minibatch.'
             )
 
-        sns.set_style("white")
+        sns.set_style('white')
         plt.plot(-self.advi_hist)
         plt.ylabel('ELBO')
         plt.xlabel('iteration')

@@ -22,7 +22,7 @@ class HierarchicalLogisticRegressionTestCase(unittest.TestCase):
 
         self.alphas = np.random.randn(self.num_cats)
         self.betas = np.random.randn(self.num_cats, self.num_pred)
-        #TODO: make this more efficient; right now, it's very explicit so I understand it.
+        # TODO: make this more efficient; right now, it's very explicit.
         x_a = np.random.randn(self.num_samples_per_cat, self.num_pred)
         y_a = np.random.binomial(1, numpy_invlogit(self.alphas[0] + np.sum(self.betas[0] * x_a, 1)))
         x_b = np.random.randn(self.num_samples_per_cat, self.num_pred)
@@ -38,9 +38,9 @@ class HierarchicalLogisticRegressionTestCase(unittest.TestCase):
             2*np.ones(self.num_samples_per_cat, dtype=np.int)
         ])
 
-        self.X_train, self.X_test, self.cat_train, self.cat_test, self.Y_train, self.Y_test = train_test_split(
-            X, cats, Y, test_size=0.4
-        )
+        output = train_test_split(X, cats, Y, test_size=0.4)
+
+        self.X_train, self.X_test, self.cat_train, self.cat_test, self.Y_train, self.Y_test = output
 
         self.test_HLR = HierarchicalLogisticRegression()
 
@@ -59,9 +59,9 @@ class HierarchicalLogisticRegressionFitTestCase(HierarchicalLogisticRegressionTe
         self.assertEqual(self.num_cats, self.test_HLR.num_cats)
         self.assertEqual(self.num_pred, self.test_HLR.num_pred)
 
-        #TODO: Figure out best way to test
-        #np.testing.assert_almost_equal(self.alphas, self.test_HLR.trace['alphas'].mean(), decimal=1)
-        #np.testing.assert_almost_equal(self.betas, self.test_HLR.trace['betas'].mean(), decimal=1)
+        # TODO: Figure out best way to test
+        # np.testing.assert_almost_equal(self.alphas, self.test_HLR.trace['alphas'].mean(), decimal=1)
+        # np.testing.assert_almost_equal(self.betas, self.test_HLR.trace['betas'].mean(), decimal=1)
 
         # For now, just check that the estimated parameters have the correct signs
         np.testing.assert_equal(

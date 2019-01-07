@@ -3,6 +3,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
+## [1.2.0] - 2019-01-07
+### Added
+- flake8 linting
+- version file
+- less strict version requirements in requirements.txt
+- PR template
+
 ## [1.1.3] - 2018-05-25
 ### Fixed
 - HLR fit method sets shared vars if no minibatch_size given

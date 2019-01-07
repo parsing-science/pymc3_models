@@ -47,6 +47,13 @@ PR Checklist
 +++++++++++++
 
 - Ensure your code has followed the Style Guidelines below
+- Run the linter on your code
+
+::
+
+    source venv/bin/activate
+    flake8 pymc3_models tests
+
 - Make sure you have written unittests where appropriate
 - Make sure the unittests pass
 

@@ -1,8 +1,5 @@
 from setuptools import setup, find_packages
 
-with open('README.rst') as r:
-    readme = r.read()
-
 with open('AUTHORS.txt') as a:
     # reSt-ify the authors list
     authors = ''
@@ -12,12 +9,19 @@ with open('AUTHORS.txt') as a:
 with open('LICENSE') as l:
     license = l.read()
 
+with open('pymc3_models/_version.py') as version_file:
+    exec(version_file.read())
+
+with open('README.md') as r:
+    readme = r.read()
+
 
 setup(
     name='pymc3_models',
-    version='1.1.3',
+    version=__version__,
     description='Custom PyMC3 models built on top of the scikit-learn API',
     long_description=readme,
+    long_description_content_type='text/markdown'
     author='Nicole Carlson',
     author_email='nicole@parsingscience.com',
     url='https://github.com/parsing-science/pymc3_models',
