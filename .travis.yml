@@ -8,5 +8,12 @@ install:
   - pip install --upgrade pip
   - pip install -r requirements.txt 
   - pip install -r requirements-dev.txt
-script:
-  - flake8 pymc3_models tests
+stages: 
+  - linting
+  - unittests
+jobs:
+  include:
+    - stage: linting
+      script: flake8 pymc3_models tests
+    - stage: unittests
+      script: pytest -v -k BayesianModelTestCase
