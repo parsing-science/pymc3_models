@@ -50,6 +50,7 @@ PR Checklist
 - Run the linter on your code
 
 ::
+
     flake8 pymc3_models tests
 
 - Make sure you have written unittests where appropriate
