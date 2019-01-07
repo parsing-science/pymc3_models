@@ -6,9 +6,6 @@ with open('AUTHORS.txt') as a:
     for author in a.read().split('\n'):
         authors += '| '+author+'\n'
 
-with open('LICENSE') as l:
-    license = l.read()
-
 with open('pymc3_models/_version.py') as version_file:
     exec(version_file.read())
 
@@ -25,7 +22,6 @@ setup(
     author='Nicole Carlson',
     author_email='nicole@parsingscience.com',
     url='https://github.com/parsing-science/pymc3_models',
-    license=license,
     packages=find_packages(),
     package_data={'docs': ['*']},
     include_package_data=True,
@@ -41,6 +37,7 @@ setup(
         'sklearn'
     ],
     classifiers=[
+        'License :: OSI Approved :: Apache Software License',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3.4'
     ]
