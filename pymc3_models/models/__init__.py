@@ -39,7 +39,7 @@ class BayesianModel(BaseEstimator):
         ----------
         inference_type : str (defaults to 'advi')
             specifies which inference method to call
-            Currently, only 'advi' and 'nuts' are supported
+            Currently, only 'advi' and 'nuts' are supported.
 
         inference_args : dict (defaults to None)
             arguments to be passed to the inference methods
@@ -162,7 +162,7 @@ class BayesianModel(BaseEstimator):
             e.g. given file_prefix = 'path/to/file/'
             This will attempt to load 'path/to/file/trace.pickle'.
 
-        load_custom_params : Bool (defaults to False)
+        load_custom_params : bool (defaults to False)
             flag to indicate whether custom parameters should be loaded
 
         Returns

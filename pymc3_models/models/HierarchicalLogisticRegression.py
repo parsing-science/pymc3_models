@@ -80,11 +80,11 @@ class HierarchicalLogisticRegression(BayesianModel):
 
         inference_type : str (defaults to 'advi')
             specifies which inference method to call
-            Currently, only 'advi' and 'nuts' are supported
+            Currently, only 'advi' and 'nuts' are supported.
 
         minibatch_size : int (defaults to None)
             number of samples to include in each minibatch for ADVI
-            If None, minibatch is not run
+            If None, minibatch is not run.
 
         inference_args : dict (defaults to None)
             arguments to be passed to the inference methods
