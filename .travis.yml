@@ -10,4 +10,4 @@ install:
   - pip install -r requirements-dev.txt
 script:
   - flake8 pymc3_models tests
-  - pytest -v -k BayesianModelTestCase
+  - pytest -v
