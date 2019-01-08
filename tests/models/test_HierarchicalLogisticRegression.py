@@ -21,7 +21,7 @@ class HierarchicalLogisticRegressionTestCase(unittest.TestCase):
         self.num_samples_per_cat = 100000
 
         # Set random seed for repeatability
-        np.random.seed(17)
+        np.random.seed(27)
 
         self.alphas = np.random.randn(self.num_cats)
         self.betas = np.random.randn(self.num_cats, self.num_pred)

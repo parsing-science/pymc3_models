@@ -20,7 +20,7 @@ class LinearRegressionTestCase(unittest.TestCase):
         self.s = 2
 
         # Set random seed for repeatability
-        np.random.seed(17)
+        np.random.seed(27)
 
         X = np.random.randn(1000, 1)
         noise = self.s * np.random.randn(1000, 1)
