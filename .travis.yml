@@ -9,3 +9,6 @@ install:
 script:
   - flake8 pymc3_models tests
   - pytest -v
+branches:
+  only:
+    - master
