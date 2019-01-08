@@ -60,7 +60,7 @@ PR Checklist
 ::
 
     source venv/bin/activate
-    python -m unittest discover -cv
+    pytest -v
 
 - Update the docs where appropriate. You can rebuild them with the commands below.
 
