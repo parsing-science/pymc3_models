@@ -22,13 +22,15 @@ class GaussianNaiveBayesTestCase(unittest.TestCase):
         self.num_pred = 10
         self.num_samples = 100000
 
-        # Generate data
-        ## Priors
+        # Set random seed for repeatability
+        np.random.seed(27)
+
+        # Generate priors
         self.alpha = np.ones(self.num_cats)
         self.pi = np.random.dirichlet(self.alpha)
         self.mu = np.random.normal(0, 100, size=(self.num_cats, self.num_pred))
         self.sigma = scipy.stats.halfnorm(loc=0, scale=100).rvs(size=(self.num_cats, self.num_pred))
-        ## Data
+        # Generate data
         Y = np.random.choice(range(self.num_cats), self.num_samples, p=self.pi)
         x_vectors = []
         for i in Y:
@@ -74,12 +76,12 @@ class GaussianNaiveBayesFitTestCase(GaussianNaiveBayesTestCase):
         self.assertEqual(self.num_training_samples, self.test_GNB.num_training_samples)
         self.assertEqual(self.num_pred, self.test_GNB.num_pred)
 
-        # TODO: How do you write tests for a stochastic mode?
+        # TODO: How do you write tests for a stochastic model?
         # TODO: Diagnose the sampling with a reasonable sampling size?
         np.testing.assert_equal(
             np.sign(self.pi),
             np.sign(self.test_GNB.trace['pi'].mean(axis=0))
-        ) 
+        )
         np.testing.assert_equal(
             np.sign(self.sigma),
             np.sign(self.test_GNB.trace['sigma'].mean(axis=0))

@@ -22,7 +22,7 @@ class GaussianNaiveBayes(BayesianModel):
     Example
     -------
     >>> import pymc3_models as pmo
-    >>> 
+    >>>
     >>> model = pmo.GaussianNaiveBayes()
     >>> model.fit(X,y)
     >>> model.predict_proba(X)
@@ -52,11 +52,11 @@ class GaussianNaiveBayes(BayesianModel):
 
         .. math::
 
-            P(y=c|x_i) = Cat(\\pi_1, \dots, \\pi_C)
+            P(y=c|x_i) = Cat(\\pi_1, \\dots, \\pi_C)
 
-        where :math:`\pi_i` is the probability that a vector belongs to category :math:`i`.
+        where :math:`\\pi_i` is the probability that a vector belongs to category :math:`i`.
 
-        We assume that the :math:`\pi_i` follow a Dirichlet distribution:
+        We assume that the :math:`\\pi_i` follow a Dirichlet distribution:
 
         .. math::
 
@@ -207,7 +207,8 @@ class GaussianNaiveBayes(BayesianModel):
         for x in X:
             prob_per_sample = scipy.stats.norm(self.trace['mu'], self.trace['sigma']).pdf(x)
             prob_per_feature = [
-                    np.sum(prob_per_sample[:, :, i], axis=0)/len(self.trace['mu']) for i in range(self.num_pred)
+                np.sum(prob_per_sample[:, :, i], axis=0)/len(self.trace['mu'])
+                for i in range(self.num_pred)
             ]
             prob_per_class = normalize(ft.reduce(lambda x, y: x*y, prob_per_feature))
             if len(posterior_prediction) == 0:
