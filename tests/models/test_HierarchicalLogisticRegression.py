@@ -58,9 +58,9 @@ class HierarchicalLogisticRegressionTestCase(unittest.TestCase):
             self.X_train,
             self.Y_train,
             self.cat_train,
+            num_advi_sample_draws=5000,
             minibatch_size=2000,
-            inference_args=inference_args,
-            num_advi_sample_draws=5000
+            inference_args=inference_args
         )
 
         self.test_dir = tempfile.mkdtemp()

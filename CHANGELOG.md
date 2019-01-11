@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 ## [2.0.0] - 2019-01-11
 ### Changed
 - num_advi_sample_draws can be input to fit methods instead of hardcoded into class
-- num_ppc_samples can be input to predict_proba methods (where applicable)
+- num_ppc_samples can be input to predict methods (where applicable)
 ### Fixed
 - Made formatting in docstrings consistent
 

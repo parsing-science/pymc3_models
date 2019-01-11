@@ -65,7 +65,7 @@ class BayesianModel(BaseEstimator):
             arguments to be passed to the PyMC3 fit method
             See PyMC3 doc for permissible values.
 
-        num_advi_sample_draws : int (defaults to 10000)
+        num_advi_sample_draws : int
             Number of samples to draw from ADVI approximation after it has been fit
         """
         with self.cached_model:

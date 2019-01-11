@@ -54,9 +54,9 @@ class GaussianNaiveBayesTestCase(unittest.TestCase):
         self.test_GNB.fit(
             self.X_train,
             self.Y_train,
+            num_advi_sample_draws=1000,
             minibatch_size=2000,
-            inference_args=inference_args,
-            num_advi_sample_draws=1000
+            inference_args=inference_args
         )
 
         self.test_dir = tempfile.mkdtemp()
