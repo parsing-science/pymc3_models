@@ -4,6 +4,7 @@ import unittest
 
 import numpy as np
 import pandas as pd
+import pymc3 as pm
 from pymc3 import summary
 from sklearn.linear_model import LogisticRegression as sklearn_LR
 from sklearn.model_selection import train_test_split
@@ -32,6 +33,20 @@ class LogisticRegressionTestCase(unittest.TestCase):
         self.X_train, self.X_test, self.Y_train, self.Y_test = train_test_split(X, Y, test_size=0.4)
 
         self.test_LR = LogisticRegression()
+        # Fit the model once
+        inference_args = {
+            'n': 60000,
+            'callbacks': [pm.callbacks.CheckParametersConvergence()]
+        }
+        # Note: print is here so PyMC3 output won't overwrite the test name
+        print('')
+        self.test_LR.fit(
+            self.X_train,
+            self.Y_train,
+            num_advi_sample_draws=5000,
+            minibatch_size=2000,
+            inference_args=inference_args
+        )
 
         self.test_dir = tempfile.mkdtemp()
 
@@ -41,10 +56,6 @@ class LogisticRegressionTestCase(unittest.TestCase):
 
 class LogisticRegressionFitTestCase(LogisticRegressionTestCase):
     def test_fit_returns_correct_model(self):
-        # Note: print is here so PyMC3 output won't overwrite the test name
-        print('')
-        self.test_LR.fit(self.X_train, self.Y_train, minibatch_size=2000)
-
         self.assertEqual(self.num_pred, self.test_LR.num_pred)
 
         np.testing.assert_almost_equal(self.alphas, self.test_LR.trace['alpha'].mean(), decimal=1)
@@ -53,14 +64,10 @@ class LogisticRegressionFitTestCase(LogisticRegressionTestCase):
 
 class LogisticRegressionPredictProbaTestCase(LogisticRegressionTestCase):
     def test_predict_proba_returns_probabilities(self):
-        print('')
-        self.test_LR.fit(self.X_train, self.Y_train, minibatch_size=2000)
         probs = self.test_LR.predict_proba(self.X_test)
         self.assertEqual(probs.shape, self.Y_test.shape)
 
     def test_predict_proba_returns_probabilities_and_std(self):
-        print('')
-        self.test_LR.fit(self.X_train, self.Y_train, minibatch_size=2000)
         probs, stds = self.test_LR.predict_proba(self.X_test, return_std=True)
         self.assertEqual(probs.shape, self.Y_test.shape)
         self.assertEqual(stds.shape, self.Y_test.shape)
@@ -76,22 +83,17 @@ class LogisticRegressionPredictProbaTestCase(LogisticRegressionTestCase):
 
 class LogisticRegressionPredictTestCase(LogisticRegressionTestCase):
     def test_predict_returns_predictions(self):
-        print('')
-        self.test_LR.fit(self.X_train, self.Y_train, minibatch_size=2000)
         preds = self.test_LR.predict(self.X_test)
         self.assertEqual(preds.shape, self.Y_test.shape)
 
 
 class LogisticRegressionScoreTestCase(LogisticRegressionTestCase):
     def test_score_scores(self):
-        print('')
-        self.test_LR.fit(self.X_train, self.Y_train, minibatch_size=2000)
         score = self.test_LR.score(self.X_test, self.Y_test)
         naive_score = np.mean(self.Y_test)
         self.assertGreaterEqual(score, naive_score)
 
     def test_score_matches_sklearn_performance(self):
-        print('')
         SLR = sklearn_LR()
         SLR.fit(self.X_train, self.Y_train)
         SLR_score = SLR.score(self.X_test, self.Y_test)
@@ -104,8 +106,6 @@ class LogisticRegressionScoreTestCase(LogisticRegressionTestCase):
 
 class LogisticRegressionSaveandLoadTestCase(LogisticRegressionTestCase):
     def test_save_and_load_work_correctly(self):
-        print('')
-        self.test_LR.fit(self.X_train, self.Y_train, minibatch_size=2000)
         probs1 = self.test_LR.predict_proba(self.X_test)
         self.test_LR.save(self.test_dir)
 

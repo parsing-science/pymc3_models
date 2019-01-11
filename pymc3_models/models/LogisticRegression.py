@@ -51,21 +51,33 @@ class LogisticRegression(BayesianModel):
 
         return model
 
-    def fit(self, X, y, inference_type='advi', minibatch_size=None, inference_args=None):
+    def fit(
+        self,
+        X,
+        y,
+        inference_type='advi',
+        num_advi_sample_draws=10000, 
+        minibatch_size=None,
+        inference_args=None
+    ):
         """
         Train the Logistic Regression model
 
         Parameters
         ----------
         X : numpy array
-            shape [n_samples, n_features]
+            shape [num_training_samples, num_pred]
 
         y : numpy array
-            shape [n_samples, ]
+            shape [num_training_samples, ]
 
         inference_type : str (defaults to 'advi')
             specifies which inference method to call
             Currently, only 'advi' and 'nuts' are supported.
+
+        num_advi_sample_draws : int (defaults to 10000)
+            Number of samples to draw from ADVI approximation after it has been fit;
+            not used if inference_type != 'advi'
 
         minibatch_size : int (defaults to None)
             number of samples to include in each minibatch for ADVI
@@ -100,21 +112,24 @@ class LogisticRegression(BayesianModel):
         else:
             self._set_shared_vars({'model_input': X, 'model_output': y})
 
-        self._inference(inference_type, inference_args)
+        self._inference(inference_type, inference_args, num_advi_sample_draws=num_advi_sample_draws)
 
         return self
 
-    def predict_proba(self, X, return_std=False):
+    def predict_proba(self, X, return_std=False, num_ppc_samples=2000):
         """
         Predicts probabilities of new data with a trained Logistic Regression
 
         Parameters
         ----------
         X : numpy array
-            shape [n_samples, n_features]
+            shape [num_training_samples, num_pred]
 
         return_std : bool (defaults to False)
             Flag of whether to return standard deviations with mean probabilities
+
+        num_ppc_samples : int (defaults to 2000)
+            'samples' parameter passed to pm.sample_ppc
         """
 
         if self.trace is None:
@@ -130,42 +145,48 @@ class LogisticRegression(BayesianModel):
             'model_output': np.zeros(num_samples, dtype='int')
         })
 
-        ppc = pm.sample_ppc(self.trace, model=self.cached_model, samples=2000)
+        ppc = pm.sample_ppc(self.trace, model=self.cached_model, samples=num_ppc_samples)
 
         if return_std:
             return ppc['o'].mean(axis=0), ppc['o'].std(axis=0)
         else:
             return ppc['o'].mean(axis=0)
 
-    def predict(self, X):
+    def predict(self, X, num_ppc_samples=2000):
         """
         Predicts labels of new data with a trained model
 
         Parameters
         ----------
         X : numpy array
-            shape [n_samples, n_features]
+            shape [num_training_samples, num_pred]
+
+        num_ppc_samples : int (defaults to 2000)
+            'samples' parameter passed to pm.sample_ppc
         """
-        ppc_mean = self.predict_proba(X)
+        ppc_mean = self.predict_proba(X, num_ppc_samples=num_ppc_samples)
 
         pred = ppc_mean > 0.5
 
         return pred
 
-    def score(self, X, y):
+    def score(self, X, y, num_ppc_samples=2000):
         """
         Scores new data with a trained model with sklearn's accuracy_score.
 
         Parameters
         ----------
         X : numpy array
-            shape [n_samples, n_features]
+            shape [num_training_samples, num_pred]
 
         y : numpy array
-            shape [n_samples, ]
+            shape [num_training_samples, ]
+
+        num_ppc_samples : int (defaults to 2000)
+            'samples' parameter passed to pm.sample_ppc
         """
 
-        return accuracy_score(y, self.predict(X))
+        return accuracy_score(y, self.predict(X, num_ppc_samples=num_ppc_samples))
 
     def save(self, file_prefix):
         params = {

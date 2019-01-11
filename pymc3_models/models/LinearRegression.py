@@ -51,21 +51,33 @@ class LinearRegression(BayesianModel):
 
         return model
 
-    def fit(self, X, y, inference_type='advi', minibatch_size=None, inference_args=None):
+    def fit(
+        self,
+        X,
+        y,
+        inference_type='advi',
+        num_advi_sample_draws=10000,
+        minibatch_size=None,
+        inference_args=None,
+    ):
         """
         Train the Linear Regression model
 
         Parameters
         ----------
         X : numpy array
-            shape [n_samples, n_features]
+            shape [num_training_samples, num_pred]
 
         y : numpy array
-            shape [n_samples, ]
+            shape [num_training_samples, ]
 
         inference_type : str (defaults to 'advi')
             specifies which inference method to call
             Currently, only 'advi' and 'nuts' are supported.
+
+        num_advi_sample_draws : int (defaults to 10000)
+            Number of samples to draw from ADVI approximation after it has been fit;
+            not used if inference_type != 'advi'
 
         minibatch_size : int (defaults to None)
             number of samples to include in each minibatch for ADVI
@@ -100,21 +112,24 @@ class LinearRegression(BayesianModel):
         else:
             self._set_shared_vars({'model_input': X, 'model_output': y})
 
-        self._inference(inference_type, inference_args)
+        self._inference(inference_type, inference_args, num_advi_sample_draws=num_advi_sample_draws)
 
         return self
 
-    def predict(self, X, return_std=False):
+    def predict(self, X, return_std=False, num_ppc_samples=2000):
         """
         Predicts values of new data with a trained Linear Regression model
 
         Parameters
         ----------
         X : numpy array
-            shape [n_samples, n_features]
+            shape [num_training_samples, num_pred]
 
         return_std : bool (defaults to False)
             flag of whether to return standard deviations with mean values
+
+        num_ppc_samples : int (defaults to 2000)
+            'samples' parameter passed to pm.sample_ppc
         """
 
         if self.trace is None:
@@ -127,27 +142,30 @@ class LinearRegression(BayesianModel):
 
         self._set_shared_vars({'model_input': X, 'model_output': np.zeros(num_samples)})
 
-        ppc = pm.sample_ppc(self.trace, model=self.cached_model, samples=2000)
+        ppc = pm.sample_ppc(self.trace, model=self.cached_model, samples=num_ppc_samples)
 
         if return_std:
             return ppc['y'].mean(axis=0), ppc['y'].std(axis=0)
         else:
             return ppc['y'].mean(axis=0)
 
-    def score(self, X, y):
+    def score(self, X, y, num_ppc_samples=2000):
         """
-        Scores new data with a trained model  with sklearn's r2_score.
+        Scores new data with a trained model with sklearn's r2_score.
 
         Parameters
         ----------
         X : numpy array
-            shape [n_samples, n_features]
+            shape [num_training_samples, num_pred]
 
         y : numpy array
-            shape [n_samples, ]
+            shape [num_training_samples, ]
+
+        num_ppc_samples : int (defaults to 2000)
+            'samples' parameter passed to pm.sample_ppc
         """
 
-        return r2_score(y, self.predict(X))
+        return r2_score(y, self.predict(X, num_ppc_samples=num_ppc_samples))
 
     def save(self, file_prefix):
         params = {

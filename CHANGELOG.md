@@ -3,6 +3,17 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
+## [2.0.0] - 2019-01-11
+### Changed
+- num_advi_sample_draws can be input to fit methods instead of hardcoded into class
+- num_ppc_samples can be input to predict methods (where applicable)
+### Fixed
+- Made formatting in docstrings consistent
+
+## [1.4.0] - 2019-01-10
+### Added
+- Gaussian Naive Bayes model
+
 ## [1.3.0] - 2019-01-08
 ### Added
 - Travis CI integration

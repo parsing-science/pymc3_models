@@ -63,24 +63,37 @@ class HierarchicalLogisticRegression(BayesianModel):
 
         return model
 
-    def fit(self, X, y, cats, inference_type='advi', minibatch_size=None, inference_args=None):
+    def fit(
+        self,
+        X,
+        y,
+        cats,
+        inference_type='advi',
+        num_advi_sample_draws=10000,
+        minibatch_size=None,
+        inference_args=None
+    ):
         """
         Train the Hierarchical Logistic Regression model
 
         Parameters
         ----------
         X : numpy array
-            shape [n_samples, n_features]
+            shape [num_training_samples, num_pred]
 
         y : numpy array
-            shape [n_samples, ]
+            shape [num_training_samples, ]
 
         cats : numpy array
-            shape [n_samples, ]
+            shape [num_training_samples, ]
 
         inference_type : str (defaults to 'advi')
             specifies which inference method to call
             Currently, only 'advi' and 'nuts' are supported.
+
+        num_advi_sample_draws : int (defaults to 10000)
+            Number of samples to draw from ADVI approximation after it has been fit;
+            not used if inference_type != 'advi'
 
         minibatch_size : int (defaults to None)
             number of samples to include in each minibatch for ADVI
@@ -121,24 +134,27 @@ class HierarchicalLogisticRegression(BayesianModel):
                 'model_cats': cats
             })
 
-        self._inference(inference_type, inference_args)
+        self._inference(inference_type, inference_args, num_advi_sample_draws=num_advi_sample_draws)
 
         return self
 
-    def predict_proba(self, X, cats, return_std=False):
+    def predict_proba(self, X, cats, return_std=False, num_ppc_samples=2000):
         """
         Predicts probabilities of new data with a trained Hierarchical Logistic Regression
 
         Parameters
         ----------
         X : numpy array
-            shape [n_samples, n_features]
+            shape [num_training_samples, num_pred]
 
         cats : numpy array
-            shape [n_samples, ]
+            shape [num_training_samples, ]
 
         return_std : bool (defaults to False)
             Flag of whether to return standard deviations with mean probabilities
+
+        num_ppc_samples : int (defaults to 2000)
+            'samples' parameter passed to pm.sample_ppc
         """
 
         if self.trace is None:
@@ -155,48 +171,54 @@ class HierarchicalLogisticRegression(BayesianModel):
             'model_cats': cats
         })
 
-        ppc = pm.sample_ppc(self.trace, model=self.cached_model, samples=2000)
+        ppc = pm.sample_ppc(self.trace, model=self.cached_model, samples=num_ppc_samples)
 
         if return_std:
             return ppc['o'].mean(axis=0), ppc['o'].std(axis=0)
         else:
             return ppc['o'].mean(axis=0)
 
-    def predict(self, X, cats):
+    def predict(self, X, cats, num_ppc_samples=2000):
         """
         Predicts labels of new data with a trained model
 
         Parameters
         ----------
         X : numpy array
-            shape [n_samples, n_features]
+            shape [num_training_samples, num_pred]
 
         cats : numpy array
-            shape [n_samples, ]
+            shape [num_training_samples, ]
+
+        num_ppc_samples : int (defaults to 2000)
+            'samples' parameter passed to pm.sample_ppc
         """
-        ppc_mean = self.predict_proba(X, cats)
+        ppc_mean = self.predict_proba(X, cats, num_ppc_samples=2000)
 
         pred = ppc_mean > 0.5
 
         return pred
 
-    def score(self, X, y, cats):
+    def score(self, X, y, cats, num_ppc_samples=2000):
         """
-        Scores new data with a trained model  with sklearn's accuracy_score.
+        Scores new data with a trained model with sklearn's accuracy_score.
 
         Parameters
         ----------
         X : numpy array
-            shape [n_samples, n_features]
+            shape [num_training_samples, num_pred]
 
         y : numpy array
-            shape [n_samples, ]
+            shape [num_training_samples, ]
 
         cats : numpy array
-            shape [n_samples, ]
+            shape [num_training_samples, ]
+
+        num_ppc_samples : int (defaults to 2000)
+            'samples' parameter passed to pm.sample_ppc
         """
 
-        return accuracy_score(y, self.predict(X, cats))
+        return accuracy_score(y, self.predict(X, cats, num_ppc_samples=num_ppc_samples))
 
     def save(self, file_prefix):
         params = {

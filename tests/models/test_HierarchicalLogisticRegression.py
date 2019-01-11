@@ -4,6 +4,7 @@ import unittest
 
 import numpy as np
 import pandas as pd
+import pymc3 as pm
 from pymc3 import summary
 from sklearn.model_selection import train_test_split
 
@@ -46,6 +47,21 @@ class HierarchicalLogisticRegressionTestCase(unittest.TestCase):
         self.X_train, self.X_test, self.cat_train, self.cat_test, self.Y_train, self.Y_test = output
 
         self.test_HLR = HierarchicalLogisticRegression()
+        # Fit the model once
+        inference_args = {
+            'n': 60000,
+            'callbacks': [pm.callbacks.CheckParametersConvergence()]
+        }
+        # Note: print is here so PyMC3 output won't overwrite the test name
+        print('')
+        self.test_HLR.fit(
+            self.X_train,
+            self.Y_train,
+            self.cat_train,
+            num_advi_sample_draws=5000,
+            minibatch_size=2000,
+            inference_args=inference_args
+        )
 
         self.test_dir = tempfile.mkdtemp()
 
@@ -55,10 +71,6 @@ class HierarchicalLogisticRegressionTestCase(unittest.TestCase):
 
 class HierarchicalLogisticRegressionFitTestCase(HierarchicalLogisticRegressionTestCase):
     def test_fit_returns_correct_model(self):
-        # Note: print is here so PyMC3 output won't overwrite the test name
-        print('')
-        self.test_HLR.fit(self.X_train, self.Y_train, self.cat_train, minibatch_size=2000)
-
         self.assertEqual(self.num_cats, self.test_HLR.num_cats)
         self.assertEqual(self.num_pred, self.test_HLR.num_pred)
 
@@ -79,14 +91,10 @@ class HierarchicalLogisticRegressionFitTestCase(HierarchicalLogisticRegressionTe
 
 class HierarchicalLogisticRegressionPredictProbaTestCase(HierarchicalLogisticRegressionTestCase):
     def test_predict_proba_returns_probabilities(self):
-        print('')
-        self.test_HLR.fit(self.X_train, self.Y_train, self.cat_train, minibatch_size=2000)
         probs = self.test_HLR.predict_proba(self.X_test, self.cat_test)
         self.assertEqual(probs.shape, self.Y_test.shape)
 
     def test_predict_proba_returns_probabilities_and_std(self):
-        print('')
-        self.test_HLR.fit(self.X_train, self.Y_train, self.cat_train, minibatch_size=2000)
         probs, stds = self.test_HLR.predict_proba(self.X_test, self.cat_test, return_std=True)
         self.assertEqual(probs.shape, self.Y_test.shape)
         self.assertEqual(stds.shape, self.Y_test.shape)
@@ -102,16 +110,12 @@ class HierarchicalLogisticRegressionPredictProbaTestCase(HierarchicalLogisticReg
 
 class HierarchicalLogisticRegressionPredictTestCase(HierarchicalLogisticRegressionTestCase):
     def test_predict_returns_predictions(self):
-        print('')
-        self.test_HLR.fit(self.X_train, self.Y_train, self.cat_train, minibatch_size=2000)
         preds = self.test_HLR.predict(self.X_test, self.cat_test)
         self.assertEqual(preds.shape, self.Y_test.shape)
 
 
 class HierarchicalLogisticRegressionScoreTestCase(HierarchicalLogisticRegressionTestCase):
     def test_score_scores(self):
-        print('')
-        self.test_HLR.fit(self.X_train, self.Y_train, self.cat_train, minibatch_size=2000)
         score = self.test_HLR.score(self.X_test, self.Y_test, self.cat_test)
         naive_score = np.mean(self.Y_test)
         self.assertGreaterEqual(score, naive_score)
@@ -119,8 +123,6 @@ class HierarchicalLogisticRegressionScoreTestCase(HierarchicalLogisticRegression
 
 class HierarchicalLogisticRegressionSaveandLoadTestCase(HierarchicalLogisticRegressionTestCase):
     def test_save_and_load_work_correctly(self):
-        print('')
-        self.test_HLR.fit(self.X_train, self.Y_train, self.cat_train, minibatch_size=2000)
         probs1 = self.test_HLR.predict_proba(self.X_test, self.cat_test)
         self.test_HLR.save(self.test_dir)
 
