@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
+## [2.1.0] - 2019-01-11
+### Added
+- Logistic Regression model
+
 ## [2.0.0] - 2019-01-11
 ### Changed
 - num_advi_sample_draws can be input to fit methods instead of hardcoded into class
