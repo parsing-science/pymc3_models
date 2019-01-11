@@ -1,6 +1,6 @@
 import numpy as np
 import pymc3 as pm
-from sklearn.metrics import r2_score
+from sklearn.metrics import accuracy_score
 import theano
 import theano.tensor as T
 
@@ -8,13 +8,13 @@ from pymc3_models.exc import PyMC3ModelsError
 from pymc3_models.models import BayesianModel
 
 
-class LinearRegression(BayesianModel):
+class LogisticRegression(BayesianModel):
     """
-    Linear Regression built using PyMC3.
+    Logistic Regression built using PyMC3.
     """
 
     def __init__(self):
-        super(LinearRegression, self).__init__()
+        super(LogisticRegression, self).__init__()
 
     def create_model(self):
         """
@@ -30,7 +30,7 @@ class LinearRegression(BayesianModel):
         """
         model_input = theano.shared(np.zeros([self.num_training_samples, self.num_pred]))
 
-        model_output = theano.shared(np.zeros(self.num_training_samples))
+        model_output = theano.shared(np.zeros(self.num_training_samples, dtype='int'))
 
         self.shared_vars = {
             'model_input': model_input,
@@ -43,17 +43,17 @@ class LinearRegression(BayesianModel):
             alpha = pm.Normal('alpha', mu=0, sd=100, shape=(1))
             betas = pm.Normal('betas', mu=0, sd=100, shape=(1, self.num_pred))
 
-            s = pm.HalfNormal('s', tau=1)
+            temp = alpha + T.sum(betas * model_input, 1)
 
-            mean = alpha + T.sum(betas * model_input, 1)
+            p = pm.invlogit(temp)
 
-            y = pm.Normal('y', mu=mean, sd=s, observed=model_output)
+            o = pm.Bernoulli('o', p, observed=model_output)
 
         return model
 
     def fit(self, X, y, inference_type='advi', minibatch_size=None, inference_args=None):
         """
-        Train the Linear Regression model
+        Train the Logistic Regression model
 
         Parameters
         ----------
@@ -104,9 +104,9 @@ class LinearRegression(BayesianModel):
 
         return self
 
-    def predict(self, X, return_std=False):
+    def predict_proba(self, X, return_std=False):
         """
-        Predicts values of new data with a trained Linear Regression model
+        Predicts probabilities of new data with a trained Logistic Regression
 
         Parameters
         ----------
@@ -114,7 +114,7 @@ class LinearRegression(BayesianModel):
             shape [n_samples, n_features]
 
         return_std : bool (defaults to False)
-            flag of whether to return standard deviations with mean values
+            Flag of whether to return standard deviations with mean probabilities
         """
 
         if self.trace is None:
@@ -125,18 +125,36 @@ class LinearRegression(BayesianModel):
         if self.cached_model is None:
             self.cached_model = self.create_model()
 
-        self._set_shared_vars({'model_input': X, 'model_output': np.zeros(num_samples)})
+        self._set_shared_vars({
+            'model_input': X,
+            'model_output': np.zeros(num_samples, dtype='int')
+        })
 
         ppc = pm.sample_ppc(self.trace, model=self.cached_model, samples=2000)
 
         if return_std:
-            return ppc['y'].mean(axis=0), ppc['y'].std(axis=0)
+            return ppc['o'].mean(axis=0), ppc['o'].std(axis=0)
         else:
-            return ppc['y'].mean(axis=0)
+            return ppc['o'].mean(axis=0)
+
+    def predict(self, X):
+        """
+        Predicts labels of new data with a trained model
+
+        Parameters
+        ----------
+        X : numpy array
+            shape [n_samples, n_features]
+        """
+        ppc_mean = self.predict_proba(X)
+
+        pred = ppc_mean > 0.5
+
+        return pred
 
     def score(self, X, y):
         """
-        Scores new data with a trained model  with sklearn's r2_score.
+        Scores new data with a trained model with sklearn's accuracy_score.
 
         Parameters
         ----------
@@ -147,7 +165,7 @@ class LinearRegression(BayesianModel):
             shape [n_samples, ]
         """
 
-        return r2_score(y, self.predict(X))
+        return accuracy_score(y, self.predict(X))
 
     def save(self, file_prefix):
         params = {
@@ -156,10 +174,10 @@ class LinearRegression(BayesianModel):
             'num_training_samples': self.num_training_samples
         }
 
-        super(LinearRegression, self).save(file_prefix, params)
+        super(LogisticRegression, self).save(file_prefix, params)
 
     def load(self, file_prefix):
-        params = super(LinearRegression, self).load(file_prefix, load_custom_params=True)
+        params = super(LogisticRegression, self).load(file_prefix, load_custom_params=True)
 
         self.inference_type = params['inference_type']
         self.num_pred = params['num_pred']
