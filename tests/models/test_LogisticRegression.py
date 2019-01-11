@@ -26,7 +26,6 @@ class LogisticRegressionTestCase(unittest.TestCase):
 
         self.alphas = np.random.randn(1)
         self.betas = np.random.randn(1, self.num_pred)
-        # TODO: make this more efficient; right now, it's very explicit.
         X = np.random.randn(self.num_samples, self.num_pred)
         Y = np.random.binomial(1, numpy_invlogit(self.alphas[0] + np.sum(self.betas * X, 1)))
 
