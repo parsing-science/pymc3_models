@@ -13,7 +13,6 @@ class BayesianModel(BaseEstimator):
     """
     def __init__(self):
         self.cached_model = None
-        self.default_advi_sample_draws = 10000
         self.inference_type = None
         self.num_pred = None
         self.shared_vars = None
@@ -30,7 +29,7 @@ class BayesianModel(BaseEstimator):
         for key in shared_vars.keys():
             self.shared_vars[key].set_value(shared_vars[key])
 
-    def _inference(self, inference_type='advi', inference_args=None):
+    def _inference(self, inference_type='advi', inference_args=None, num_advi_sample_draws=10000):
         """
         Calls internal methods for two types of inferences.
         Raises an error if the inference_type is not supported.
@@ -44,15 +43,19 @@ class BayesianModel(BaseEstimator):
         inference_args : dict (defaults to None)
             arguments to be passed to the inference methods
             Check the PyMC3 docs to see what is permitted.
+
+        num_advi_sample_draws : int (defaults to 10000)
+            Number of samples to draw from ADVI approximation after it has been fit;
+            not used if inference_type != 'advi'
         """
         if inference_type == 'advi':
-            self._advi_inference(inference_args)
+            self._advi_inference(inference_args, num_advi_sample_draws=num_advi_sample_draws)
         elif inference_type == 'nuts':
             self._nuts_inference(inference_args)
         else:
             raise PyMC3ModelsError('{} is not a supported type of inference'.format(inference_type))
 
-    def _advi_inference(self, inference_args):
+    def _advi_inference(self, inference_args, num_advi_sample_draws):
         """
         Runs variational ADVI and then samples from those results.
 
@@ -61,13 +64,16 @@ class BayesianModel(BaseEstimator):
         inference_args : dict
             arguments to be passed to the PyMC3 fit method
             See PyMC3 doc for permissible values.
+
+        num_advi_sample_draws : int
+            Number of samples to draw from ADVI approximation after it has been fit
         """
         with self.cached_model:
             inference = pm.ADVI()
             approx = pm.fit(method=inference, **inference_args)
 
         self.approx = approx
-        self.trace = approx.sample(draws=self.default_advi_sample_draws)
+        self.trace = approx.sample(draws=num_advi_sample_draws)
         self.summary = pm.summary(self.trace)
         self.advi_hist = inference.hist
 

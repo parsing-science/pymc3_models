@@ -4,6 +4,7 @@ import unittest
 
 import numpy as np
 import pandas as pd
+import pymc3 as pm
 from pymc3 import summary
 import scipy.stats
 from sklearn.model_selection import train_test_split
@@ -20,7 +21,7 @@ class GaussianNaiveBayesTestCase(unittest.TestCase):
 
         self.num_cats = 3
         self.num_pred = 10
-        self.num_samples = 100000
+        self.num_samples = 50000
 
         # Set random seed for repeatability
         np.random.seed(27)
@@ -38,18 +39,27 @@ class GaussianNaiveBayesTestCase(unittest.TestCase):
         X = np.vstack(x_vectors)
 
         # Split into train/test sets
-        split = train_test_split(X, Y, test_size=0.4)
-        self.X_train = split[0]
-        self.X_test = split[1]
-        self.Y_train = split[2]
-        self.Y_test = split[3]
+        self.X_train, self.X_test, self.Y_train, self.Y_test = train_test_split(X, Y, test_size=0.4)
 
         self.num_training_samples = self.Y_train.shape[0]
-        self.test_GNB = GaussianNaiveBayes()
-        self.test_dir = tempfile.mkdtemp()
 
-        # Fit the model once and for all
-        self.test_GNB.fit(self.X_train, self.Y_train, minibatch_size=2000)
+        self.test_GNB = GaussianNaiveBayes()
+        # Fit the model once
+        inference_args = {
+            'n': 10000,
+            'callbacks': [pm.callbacks.CheckParametersConvergence()]
+        }
+        # Note: print is here so PyMC3 output won't overwrite the test name
+        print('')
+        self.test_GNB.fit(
+            self.X_train,
+            self.Y_train,
+            num_advi_sample_draws=1000,
+            minibatch_size=2000,
+            inference_args=inference_args
+        )
+
+        self.test_dir = tempfile.mkdtemp()
 
     def tearDown(self):
         """
@@ -68,9 +78,6 @@ class GaussianNaiveBayesFitTestCase(GaussianNaiveBayesTestCase):
 
         TOOO: Find better strategies to test probabilistic code.
         """
-
-        print('')
-
         # Check that the model correctly infers dimensions
         self.assertEqual(self.num_cats, self.test_GNB.num_cats)
         self.assertEqual(self.num_training_samples, self.test_GNB.num_training_samples)
@@ -90,7 +97,6 @@ class GaussianNaiveBayesFitTestCase(GaussianNaiveBayesTestCase):
 
 class GaussianNaiveBayesPredictProbaTest(GaussianNaiveBayesTestCase):
     def test_predict_proba_returns_probabilities(self):
-        print('')
         probs = self.test_GNB.predict_proba(self.X_test)
         self.assertEqual(probs.shape[0], self.Y_test.shape[0])
 
@@ -98,16 +104,15 @@ class GaussianNaiveBayesPredictProbaTest(GaussianNaiveBayesTestCase):
         with self.assertRaises(PyMC3ModelsError) as no_fit_error:
             test_GNB = GaussianNaiveBayes()
             test_GNB.predict_proba(self.X_train)
-        expected = 'Run fit() on the model before predict()'
+        expected = 'Run fit on the model before predict'
         self.assertEqual(str(no_fit_error.exception), expected)
 
 
 class GaussianNaiveBayesPredictionTestCase(GaussianNaiveBayesTestCase):
     def test_predict_returns_predictions(self):
         """
-        Test that the predict() function's  output has the correct shape.
+        Test that the predict() function's output has the correct shape.
         """
-        print('')
         preds = self.test_GNB.predict(self.X_test)
         self.assertEqual(preds.shape, self.Y_test.shape)
 
@@ -115,14 +120,12 @@ class GaussianNaiveBayesPredictionTestCase(GaussianNaiveBayesTestCase):
 @unittest.skip('test not implemented yet')
 class GaussianNaiveBayesScoreTestCase(GaussianNaiveBayesTestCase):
     def test_score_scores(self):
-        print('')
         # TODO: Figure out how to test the score function
         score = self.test_GNB.score(self.X_test, self.Y_test)
 
 
 class GaussianNaiveBayesSaveAndLoadTestCase(GaussianNaiveBayesTestCase):
     def test_save_and_load_work_correctly(self):
-        print('')
         probs1 = self.test_GNB.predict_proba(self.X_test)
         self.test_GNB.save(self.test_dir)
 
