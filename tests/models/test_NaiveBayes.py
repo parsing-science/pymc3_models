@@ -21,7 +21,7 @@ class GaussianNaiveBayesTestCase(unittest.TestCase):
 
         self.num_cats = 3
         self.num_pred = 10
-        self.num_samples = 100000
+        self.num_samples = 50000
 
         # Set random seed for repeatability
         np.random.seed(27)
@@ -46,7 +46,7 @@ class GaussianNaiveBayesTestCase(unittest.TestCase):
         self.test_GNB = GaussianNaiveBayes()
         # Fit the model once
         inference_args = {
-            'n': 60000,
+            'n': 10000,
             'callbacks': [pm.callbacks.CheckParametersConvergence()]
         }
         # Note: print is here so PyMC3 output won't overwrite the test name
@@ -56,7 +56,7 @@ class GaussianNaiveBayesTestCase(unittest.TestCase):
             self.Y_train,
             minibatch_size=2000,
             inference_args=inference_args,
-            num_advi_sample_draws=5000
+            num_advi_sample_draws=1000
         )
 
         self.test_dir = tempfile.mkdtemp()
