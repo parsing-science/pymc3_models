@@ -56,7 +56,7 @@ class LogisticRegression(BayesianModel):
         X,
         y,
         inference_type='advi',
-        num_advi_sample_draws=10000, 
+        num_advi_sample_draws=10000,
         minibatch_size=None,
         inference_args=None
     ):
