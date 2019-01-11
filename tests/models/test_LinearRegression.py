@@ -33,8 +33,8 @@ class LinearRegressionTestCase(unittest.TestCase):
 
         self.test_LR = LinearRegression()
         # Fit the model with ADVI once
-        self.test_LR.fit(self.X_train, self.Y_train,  num_advi_sample_draws=5000, minibatch_size=2000)
-        
+        self.test_LR.fit(self.X_train, self.Y_train, num_advi_sample_draws=5000, minibatch_size=2000)
+
         self.nuts_LR = LinearRegression()
 
         self.test_dir = tempfile.mkdtemp()

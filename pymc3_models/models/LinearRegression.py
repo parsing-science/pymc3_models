@@ -129,7 +129,7 @@ class LinearRegression(BayesianModel):
             flag of whether to return standard deviations with mean values
 
         num_ppc_samples : int (defaults to 2000)
-            'samples' parameter passed to pm.sample_ppc 
+            'samples' parameter passed to pm.sample_ppc
         """
 
         if self.trace is None:
@@ -162,7 +162,7 @@ class LinearRegression(BayesianModel):
             shape [num_training_samples, ]
 
         num_ppc_samples : int (defaults to 2000)
-            'samples' parameter passed to pm.sample_ppc 
+            'samples' parameter passed to pm.sample_ppc
         """
 
         return r2_score(y, self.predict(X, num_ppc_samples=num_ppc_samples))

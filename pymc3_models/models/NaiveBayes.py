@@ -172,7 +172,7 @@ class GaussianNaiveBayes(BayesianModel):
         else:
             self._set_shared_vars({'model_input': X, 'model_output': y})
 
-        self._inference(inference_type, inference_args,  num_advi_sample_draws=num_advi_sample_draws)
+        self._inference(inference_type, inference_args, num_advi_sample_draws=num_advi_sample_draws)
 
         return self
 

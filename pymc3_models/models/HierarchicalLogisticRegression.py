@@ -154,7 +154,7 @@ class HierarchicalLogisticRegression(BayesianModel):
             Flag of whether to return standard deviations with mean probabilities
 
         num_ppc_samples : int (defaults to 2000)
-            'samples' parameter passed to pm.sample_ppc 
+            'samples' parameter passed to pm.sample_ppc
         """
 
         if self.trace is None:
@@ -191,7 +191,7 @@ class HierarchicalLogisticRegression(BayesianModel):
             shape [num_training_samples, ]
 
         num_ppc_samples : int (defaults to 2000)
-            'samples' parameter passed to pm.sample_ppc 
+            'samples' parameter passed to pm.sample_ppc
         """
         ppc_mean = self.predict_proba(X, cats, num_ppc_samples=2000)
 
@@ -215,7 +215,7 @@ class HierarchicalLogisticRegression(BayesianModel):
             shape [num_training_samples, ]
 
         num_ppc_samples : int (defaults to 2000)
-            'samples' parameter passed to pm.sample_ppc 
+            'samples' parameter passed to pm.sample_ppc
         """
 
         return accuracy_score(y, self.predict(X, cats, num_ppc_samples=num_ppc_samples))
