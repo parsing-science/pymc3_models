@@ -43,6 +43,10 @@ class BayesianModel(BaseEstimator):
         inference_args : dict (defaults to None)
             arguments to be passed to the inference methods
             Check the PyMC3 docs to see what is permitted.
+
+        num_advi_sample_draws : int (defaults to 10000)
+            Number of samples to draw from ADVI approximation after it has been fit;
+            not used if inference_type != 'advi'
         """
         if inference_type == 'advi':
             self._advi_inference(inference_args, num_advi_sample_draws=num_advi_sample_draws)
@@ -60,6 +64,9 @@ class BayesianModel(BaseEstimator):
         inference_args : dict
             arguments to be passed to the PyMC3 fit method
             See PyMC3 doc for permissible values.
+
+        num_advi_sample_draws : int (defaults to 10000)
+            Number of samples to draw from ADVI approximation after it has been fit
         """
         with self.cached_model:
             inference = pm.ADVI()

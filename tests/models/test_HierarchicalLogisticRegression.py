@@ -71,7 +71,6 @@ class HierarchicalLogisticRegressionTestCase(unittest.TestCase):
 
 class HierarchicalLogisticRegressionFitTestCase(HierarchicalLogisticRegressionTestCase):
     def test_fit_returns_correct_model(self):
-
         self.assertEqual(self.num_cats, self.test_HLR.num_cats)
         self.assertEqual(self.num_pred, self.test_HLR.num_pred)
 

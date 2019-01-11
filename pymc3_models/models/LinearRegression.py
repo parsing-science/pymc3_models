@@ -75,6 +75,10 @@ class LinearRegression(BayesianModel):
             specifies which inference method to call
             Currently, only 'advi' and 'nuts' are supported.
 
+        num_advi_sample_draws : int (defaults to 10000)
+            Number of samples to draw from ADVI approximation after it has been fit;
+            not used if inference_type != 'advi'
+
         minibatch_size : int (defaults to None)
             number of samples to include in each minibatch for ADVI
             If None, minibatch is not run.
@@ -123,6 +127,9 @@ class LinearRegression(BayesianModel):
 
         return_std : bool (defaults to False)
             flag of whether to return standard deviations with mean values
+
+        num_ppc_samples : int (defaults to 2000)
+            'samples' parameter passed to pm.sample_ppc 
         """
 
         if self.trace is None:
@@ -153,6 +160,9 @@ class LinearRegression(BayesianModel):
 
         y : numpy array
             shape [num_training_samples, ]
+
+        num_ppc_samples : int (defaults to 2000)
+            'samples' parameter passed to pm.sample_ppc 
         """
 
         return r2_score(y, self.predict(X, num_ppc_samples=num_ppc_samples))

@@ -91,6 +91,10 @@ class HierarchicalLogisticRegression(BayesianModel):
             specifies which inference method to call
             Currently, only 'advi' and 'nuts' are supported.
 
+        num_advi_sample_draws : int (defaults to 10000)
+            Number of samples to draw from ADVI approximation after it has been fit;
+            not used if inference_type != 'advi'
+
         minibatch_size : int (defaults to None)
             number of samples to include in each minibatch for ADVI
             If None, minibatch is not run.
@@ -148,6 +152,9 @@ class HierarchicalLogisticRegression(BayesianModel):
 
         return_std : bool (defaults to False)
             Flag of whether to return standard deviations with mean probabilities
+
+        num_ppc_samples : int (defaults to 2000)
+            'samples' parameter passed to pm.sample_ppc 
         """
 
         if self.trace is None:
@@ -182,6 +189,9 @@ class HierarchicalLogisticRegression(BayesianModel):
 
         cats : numpy array
             shape [num_training_samples, ]
+
+        num_ppc_samples : int (defaults to 2000)
+            'samples' parameter passed to pm.sample_ppc 
         """
         ppc_mean = self.predict_proba(X, cats, num_ppc_samples=2000)
 
@@ -203,6 +213,9 @@ class HierarchicalLogisticRegression(BayesianModel):
 
         cats : numpy array
             shape [num_training_samples, ]
+
+        num_ppc_samples : int (defaults to 2000)
+            'samples' parameter passed to pm.sample_ppc 
         """
 
         return accuracy_score(y, self.predict(X, cats, num_ppc_samples=num_ppc_samples))

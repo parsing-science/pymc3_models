@@ -4,6 +4,7 @@ import unittest
 
 import numpy as np
 import pandas as pd
+import pymc3 as pm
 from pymc3 import summary
 import scipy.stats
 from sklearn.model_selection import train_test_split
@@ -53,7 +54,7 @@ class GaussianNaiveBayesTestCase(unittest.TestCase):
         self.test_GNB.fit(
             self.X_train,
             self.Y_train,
-            minibatch_size=2000
+            minibatch_size=2000,
             inference_args=inference_args,
             num_advi_sample_draws=5000
         )

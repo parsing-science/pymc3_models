@@ -134,6 +134,10 @@ class GaussianNaiveBayes(BayesianModel):
             specifies which inference method to call
             Currently, only 'advi' and 'nuts' are supported.
 
+        num_advi_sample_draws : int (defaults to 10000)
+            Number of samples to draw from ADVI approximation after it has been fit;
+            not used if inference_type != 'advi'
+
         minibatch_size : int (defaults to None)
             number of samples to include in each minibatch for ADVI
             If None, minibatch is not run.
