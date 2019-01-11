@@ -32,6 +32,9 @@ class LinearRegressionTestCase(unittest.TestCase):
         )
 
         self.test_LR = LinearRegression()
+        # Fit the model with ADVI once
+        self.test_LR.fit(self.X_train, self.Y_train, minibatch_size=2000, num_advi_sample_draws=5000)
+        
         self.nuts_LR = LinearRegression()
 
         self.test_dir = tempfile.mkdtemp()
@@ -67,13 +70,11 @@ class LinearRegressionFitTestCase(LinearRegressionTestCase):
 class LinearRegressionPredictTestCase(LinearRegressionTestCase):
     def test_predict_returns_predictions(self):
         print('')
-        self.test_LR.fit(self.X_train, self.Y_train)
         preds = self.test_LR.predict(self.X_test)
         self.assertEqual(preds.shape, self.Y_test.shape)
 
     def test_predict_returns_mean_predictions_and_std(self):
         print('')
-        self.test_LR.fit(self.X_train, self.Y_train)
         preds, stds = self.test_LR.predict(self.X_test, return_std=True)
         self.assertEqual(preds.shape, self.Y_test.shape)
         self.assertEqual(stds.shape, self.Y_test.shape)
@@ -94,7 +95,6 @@ class LinearRegressionScoreTestCase(LinearRegressionTestCase):
         skLR.fit(self.X_train, self.Y_train)
         skLR_score = skLR.score(self.X_test, self.Y_test)
 
-        self.test_LR.fit(self.X_train, self.Y_train)
         score = self.test_LR.score(self.X_test, self.Y_test)
         np.testing.assert_almost_equal(skLR_score, score, decimal=1)
 
@@ -102,7 +102,6 @@ class LinearRegressionScoreTestCase(LinearRegressionTestCase):
 class LinearRegressionSaveandLoadTestCase(LinearRegressionTestCase):
     def test_save_and_load_work_correctly(self):
         print('')
-        self.test_LR.fit(self.X_train, self.Y_train)
         score1 = self.test_LR.score(self.X_test, self.Y_test)
         self.test_LR.save(self.test_dir)
 

@@ -110,24 +110,38 @@ class GaussianNaiveBayes(BayesianModel):
 
         return model
 
-    def fit(self, X, y, inference_type='advi', minibatch_size=None, inference_args=None):
+    def fit(
+        self,
+        X,
+        y,
+        inference_type='advi',
+        num_advi_sample_draws=10000,
+        minibatch_size=None,
+        inference_args=None
+    ):
         """
         Train the Naive Bayes model.
 
         Parameters
         ----------
-        X : numpy array, shape [num_training_samples, num_pred]. Contains the data points.
+        X : numpy array
+            shape [num_training_samples, num_pred]. Contains the data points
 
-        y : numpy array, shape [num_training_samples,]. Contains the category of the data points.
+        y : numpy array
+            shape [num_training_samples,]. Contains the category of the data points
 
-        inference_type : string, specifies which inference method to call.
-            Default is 'advi'. Currently, only 'advi' and 'nuts' are implemented.
+        inference_type : str (defaults to 'advi')
+            specifies which inference method to call
+            Currently, only 'advi' and 'nuts' are supported.
 
-        minibatch_size : int, number of samples to include in each minibatch
-            for ADVI. Defaults to None so minibatch is not run by default.
+        minibatch_size : int (defaults to None)
+            number of samples to include in each minibatch for ADVI
+            If None, minibatch is not run.
 
-        inference_args : dict, arguments to be passed to the inference methods.
-            Check the PyMC3 documentation.
+        inference_args : dict (defaults to None)
+            arguments to be passed to the inference methods
+            Check the PyMC3 docs for permissable values.
+            If None, default values will be set.
 
         Returns
         -------
@@ -154,7 +168,7 @@ class GaussianNaiveBayes(BayesianModel):
         else:
             self._set_shared_vars({'model_input': X, 'model_output': y})
 
-        self._inference(inference_type, inference_args)
+        self._inference(inference_type, inference_args,  num_advi_sample_draws=num_advi_sample_draws)
 
         return self
 
@@ -187,7 +201,8 @@ class GaussianNaiveBayes(BayesianModel):
 
         Parameters
         ----------
-        X : numpy array, shape [num_training_samples, num_pred]. Contains the points
+        X : numpy array
+            shape [num_training_samples, num_pred]. Contains the points
             for which we want to predict the class
 
         Returns
@@ -201,7 +216,7 @@ class GaussianNaiveBayes(BayesianModel):
         """
 
         if self.trace is None:
-            raise PyMC3ModelsError("Run fit() on the model before predict()")
+            raise PyMC3ModelsError('Run fit on the model before predict')
 
         posterior_prediction = np.array([])
         for x in X:
@@ -226,8 +241,9 @@ class GaussianNaiveBayes(BayesianModel):
 
         Parameters
         ----------
-        X : numpy array, shape [num_training_samples, num_pred]. Contains the data
-            to classify.
+        X : numpy array
+            shape [num_training_samples, num_pred]. Contains the data
+            to classify
 
         Returns
         -------
@@ -244,9 +260,11 @@ class GaussianNaiveBayes(BayesianModel):
 
         Parameters
         ----------
-        X : numpy array, shape [num_training_samples, num_pred]. Contains the data points.
+        X : numpy array
+            shape [num_training_samples, num_pred]. Contains the data points
 
-        y : numpy array, shape [num_training_samples,]. Contains the category of the data points.
+        y : numpy array
+            shape [num_training_samples,]. Contains the category of the data points
 
         Returns
         -------
