@@ -201,7 +201,7 @@ class HierarchicalLogisticRegression(BayesianModel):
 
     def score(self, X, y, cats, num_ppc_samples=2000):
         """
-        Scores new data with a trained model.
+        Scores new data with a trained model with sklearn's accuracy_score.
 
         Parameters
         ----------
