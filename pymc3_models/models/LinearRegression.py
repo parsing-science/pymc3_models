@@ -142,7 +142,7 @@ class LinearRegression(BayesianModel):
 
         self._set_shared_vars({'model_input': X, 'model_output': np.zeros(num_samples)})
 
-        ppc = pm.sample_ppc(self.trace, model=self.cached_model, samples=num_ppc_samples)
+        ppc = pm.sample_posterior_predictive(self.trace, model=self.cached_model, samples=num_ppc_samples)
 
         if return_std:
             return ppc['y'].mean(axis=0), ppc['y'].std(axis=0)
